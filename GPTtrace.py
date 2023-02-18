@@ -20,9 +20,12 @@ ENV_ACCESS_TOKEN = "GPTTRACE_ACCESS_TOKEN"
 PROMPTS_DIR = Path("./prompts")
 
 
-def pretty_print(input, lexer=MarkdownLexer):
+def pretty_print(input, lexer=MarkdownLexer, *args, **kwargs):
     tokens = list(pygments.lex(input, lexer=lexer()))
-    print_formatted_text(PygmentsTokens(tokens))
+    print_formatted_text(PygmentsTokens(tokens), *args, **kwargs)
+
+
+# print = pretty_print
 
 
 def main():
@@ -47,6 +50,9 @@ def main():
         "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
     group.add_argument(
         "--train", help="Train ChatGPT with conversions we provided", action="store_true")
+
+    parser.add_argument("-v", "--verbose",
+                        help="Show more details", action="store_true")
 
     parser.add_argument(
         "-u",
@@ -118,7 +124,6 @@ def construct_generate_prompt(text: str) -> str:
 Please write eBPF programs for me.
 No explanation required, no instruction required, don't tell me how to compile and run.
 What I want is a eBPF program for: {text}."""
-
 
 
 def construct_running_prompt(text: str) -> str:
