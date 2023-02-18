@@ -15,16 +15,19 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 ## Usage
 
 ```console
-$ python main.py
-usage: GPTtrace [-h] [-e | -v | -r TEXT] [-u UUID] [-t ACCESS_TOKEN]
+$ ./GPTtrace.py
+usage: GPTtrace [-h] [-i | -v | -e TEXT | -g TEXT] [-u UUID] [-t ACCESS_TOKEN]
 
 Use ChatGPT to write eBPF programs (bpftrace, etc.)
 
 optional arguments:
   -h, --help            show this help message and exit
-  -e, --explain         Let ChatGPT explain what's eBPF
-  -v, --verbose         Print the receive
-  -r TEXT, --run TEXT   Generate commands using your input with ChatGPT, and run it
+  -i, --info            Let ChatGPT explain what's eBPF
+  -v, --verbose         Print the prompt and receive message
+  -e TEXT, --execute TEXT
+                        Generate commands using your input with ChatGPT, and run it
+  -g TEXT, --generate TEXT
+                        Generate eBPF programs using your input with ChatGPT
   -u UUID, --uuid UUID  Conversion UUID to use, or passed through environment variable `GPTTRACE_CONV_UUID`
   -t ACCESS_TOKEN, --access-token ACCESS_TOKEN
                         ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through
