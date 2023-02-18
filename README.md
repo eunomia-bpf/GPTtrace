@@ -1,10 +1,10 @@
-# GPTtrace
+# GPTtrace 🤖
 
 Generate eBPF programs and tracing with ChatGPT and natural language
 
-## Introduction
+## Key Features 💡
 
-- Tracing with natural language
+- Interact and Tracing your Linux with natural language
 
 ![result](doc/result.png)
 
@@ -29,6 +29,12 @@ optional arguments:
   -t ACCESS_TOKEN, --access-token ACCESS_TOKEN
                         ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through
                         `GPTTRACE_ACCESS_TOKEN`
+```
+
+## Installation 🔧
+
+```sh
+./install.sh
 ```
 
 ## Examples
