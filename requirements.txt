@@ -24,7 +24,7 @@ pycodestyle==2.10.0
 pycryptodomex==3.17
 pyflakes==3.0.1
 Pygments==2.14.0
-pygments-markdown-lexer==0.1.0.dev39
+pygments-markdown-lexer
 pylint==2.16.2
 regex==2022.10.31
 requests==2.28.2
