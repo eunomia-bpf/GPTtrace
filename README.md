@@ -4,7 +4,7 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 
 ## Key Features 💡
 
-- Interact and Tracing your Linux with natural language
+- Interact and Tracing your Linux with natural language, it can tell how to write eBPF programs in `BCC`, `libbpf` styles.
 
 ![result](doc/result.png)
 
@@ -30,6 +30,13 @@ optional arguments:
                         ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through
                         `GPTTRACE_ACCESS_TOKEN`
 ```
+
+In order to login with ChatGPT:
+
+- get the `Conversion ID` from ChatGPT, and then set it to the environment variable `GPTTRACE_CONV_UUID` or use the `-u` option. The `Conversion ID` is the last part of the URL of the conversation, for example, the `Conversion ID` of `https://chat.openai.com/conv/1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p` is `1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p`(example, not usable).
+- get the `access token` from ChatGPT, and then set it to the environment variable `GPTTRACE_ACCESS_TOKEN` or use the `-t` option. see `https://chat.openai.com/api/auth/session` for the access token.
+
+```console
 
 ## Installation 🔧
 

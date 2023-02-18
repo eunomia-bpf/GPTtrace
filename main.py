@@ -11,6 +11,7 @@ from marko.inline import RawText
 ENV_UUID = "GPTTRACE_CONV_UUID"
 ENV_ACCESS_TOKEN = "GPTTRACE_ACCESS_TOKEN"
 
+
 def main():
     parser = argparse.ArgumentParser(
         prog='GPTtrace',
@@ -18,19 +19,20 @@ def main():
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
-        "-e", "--explain", help="Let ChatGPT explain what's eBPF", action="store_true")
+        "-i", "--info", help="Let ChatGPT explain what's eBPF", action="store_true")
     group.add_argument(
-        "-v", "--verbose", help="Print the receive ", action="store_true")
+        "-v", "--verbose", help="Print the prompt and receive message", action="store_true")
     group.add_argument(
-        "-r", "--run", help="Generate commands using your input with ChatGPT, and run it", action="store", metavar="TEXT")
-
+        "-e", "--execute", help="Generate commands using your input with ChatGPT, and run it", action="store", metavar="TEXT")
+    group.add_argument(
+        "-g", "--execute", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
     parser.add_argument(
         "-u", "--uuid", help=f"Conversion UUID to use, or passed through environment variable `{ENV_UUID}`")
     parser.add_argument("-t", "--access-token",
                         help=f"ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through `{ENV_ACCESS_TOKEN}`")
     args = parser.parse_args()
 
-    if (args.explain or args.run) is None:
+    if (args.info or args.execute) is None:
         parser.print_help()
         return
 
@@ -41,26 +43,29 @@ def main():
             f"Either provide your access token through `-t` or through environment variable {ENV_ACCESS_TOKEN}")
         return
     chatbot = Chatbot(config={"access_token": access_token})
-    if args.explain:
+    if args.info:
         generate_result(chatbot, "Explain what's eBPF", conv_uuid, True)
-    elif args.run is not None:
-        desc: str = args.run
+    elif args.execute is not None:
+        desc: str = args.execute
         print("Sending query to ChatGPT: " + desc)
-        ret_val = generate_result(chatbot, construct_prompt(desc), conv_uuid, args.verbose)
+        ret_val = generate_result(
+            chatbot, construct_running_prompt(desc), conv_uuid, args.verbose)
         # print(ret_val)
         parsed = make_executable_command(ret_val)
         # print(f"Command to run: {parsed}")
         print("Press Ctrl+C to stop the program....")
         os.system("sudo " + parsed)
 
-def construct_prompt(text: str) -> str:
-        return f'''You are now a translater from human language to {os.uname()[0]} shell bpftrace command. 
+
+def construct_running_prompt(text: str) -> str:
+    return f'''You are now a translater from human language to {os.uname()[0]} shell bpftrace command. 
 No explanation required.
 respond with only the raw shell bpftrace command. 
 It should be start with `bpftrace`. 
 Your response should be able to put into a shell and run directly.
 Just output in one line, without any description, or any other text that cannot be run in shell.
 What should I type to shell to trace using bpftrace for: {text}, in one line.'''
+
 
 def make_executable_command(command: str) -> str:
     if command.startswith('\n'):
@@ -74,6 +79,7 @@ def make_executable_command(command: str) -> str:
     command = command.strip()
     command = command.split('User: ')[0]
     return command
+
 
 def generate_result(bot: Chatbot, text: str, session: str = None, print_out: bool = False) -> str:
     from io import StringIO
@@ -91,6 +97,7 @@ def generate_result(bot: Chatbot, text: str, session: str = None, print_out: boo
         print()
     return buf.getvalue()
 
+
 def extract_code_blocks(text: str) -> List[str]:
     result = []
     parser = Parser()
@@ -100,6 +107,7 @@ def extract_code_blocks(text: str) -> List[str]:
             blk: RawText = block.children[0]
             result.append(blk.children)
     return result
+
 
 if __name__ == "__main__":
     main()
