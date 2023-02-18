@@ -20,6 +20,8 @@ def main():
     group.add_argument(
         "-e", "--explain", help="Let ChatGPT explain what's eBPF", action="store_true")
     group.add_argument(
+        "-v", "--verbose", help="Print the receive ", action="store_true")
+    group.add_argument(
         "-r", "--run", help="Generate commands using your input with ChatGPT, and run it", action="store", metavar="TEXT")
 
     parser.add_argument(
@@ -40,13 +42,15 @@ def main():
         return
     chatbot = Chatbot(config={"access_token": access_token})
     if args.explain:
-        generate_result(chatbot, "解释一下什么是 eBPF", conv_uuid, True)
+        generate_result(chatbot, "Explain what's eBPF", conv_uuid, True)
     elif args.run is not None:
         desc: str = args.run
-        ret_val = generate_result(chatbot, desc, conv_uuid, True)
+        print("Sending query to ChatGPT: " + desc)
+        ret_val = generate_result(chatbot, construct_prompt(desc), conv_uuid, args.verbose)
         # print(ret_val)
         parsed = make_executable_command(ret_val)
-        print(f"Command to run: {parsed}")
+        # print(f"Command to run: {parsed}")
+        print("Press Ctrl+C to stop the program....")
         os.system("sudo " + parsed)
 
 def construct_prompt(text: str) -> str:
@@ -74,10 +78,9 @@ def make_executable_command(command: str) -> str:
 def generate_result(bot: Chatbot, text: str, session: str = None, print_out: bool = False) -> str:
     from io import StringIO
     prev_text = ""
-    query_text = construct_prompt(text)
     buf = StringIO()
     for data in bot.ask(
-        query_text, conversation_id=session
+        text, conversation_id=session
     ):
         message = data["message"][len(prev_text):]
         if print_out:
