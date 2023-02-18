@@ -45,21 +45,43 @@ def main():
         desc: str = args.run
         ret_val = generate_result(chatbot, desc, conv_uuid, True)
         # print(ret_val)
-        parsed = extract_code_blocks(ret_val)
-        print(f"Command to run: {parsed[0]}")
-        os.system(parsed[0])
+        parsed = make_executable_command(ret_val)
+        print(f"Command to run: {parsed}")
+        os.system("sudo " + parsed)
+
+def construct_prompt(text: str) -> str:
+        return f'''You are now a translater from human language to {os.uname()[0]} shell bpftrace command. 
+No explanation required.
+respond with only the raw shell bpftrace command. 
+It should be start with `bpftrace`. 
+Your response should be able to put into a shell and run directly.
+Just output in one line, without any description, or any other text that cannot be run in shell.
+What should I type to shell to trace using bpftrace for: {text}, in one line.'''
+
+def make_executable_command(command: str) -> str:
+    if command.startswith('\n'):
+        command = command[1:]
+    if command.endswith('\n'):
+        command = command[:-1]
+    if command.startswith('`'):
+        command = command[1:]
+    if command.endswith('`'):
+        command = command[:-1]
+    command = command.strip()
+    command = command.split('User: ')[0]
+    return command
 
 def generate_result(bot: Chatbot, text: str, session: str = None, print_out: bool = False) -> str:
     from io import StringIO
     prev_text = ""
+    query_text = construct_prompt(text)
     buf = StringIO()
     for data in bot.ask(
-        text, conversation_id=session
+        query_text, conversation_id=session
     ):
         message = data["message"][len(prev_text):]
         if print_out:
             print(message, end="", flush=True)
-
         buf.write(message)
         prev_text = data["message"]
     if print_out:
