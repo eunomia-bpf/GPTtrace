@@ -26,8 +26,6 @@ def pretty_print(input, lexer=MarkdownLexer, *args, **kwargs):
 
 
 # print = pretty_print
-
-
 def main():
     parser = argparse.ArgumentParser(
         prog="GPTtrace",
@@ -111,7 +109,6 @@ def main():
                 input_data = f.read()
             if args.verbose:
                 print(input_data)
-            print("-"*len(info))
             _, session = generate_result(
                 chatbot, input_data, conv_uuid, args.verbose)
         print(f"Trained session: {session}")
