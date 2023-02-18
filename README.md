@@ -44,6 +44,8 @@ optional arguments:
                         `GPTTRACE_ACCESS_TOKEN`
 ```
 
+Note that the `GPTtrace` tool now is not a complete toolset, and it is not recommended to use it in production. We are working to make it more stable and complete!
+
 ### First: login to ChatGPT
 
 - get the `Conversion ID` from ChatGPT, and then set it to the environment variable `GPTTRACE_CONV_UUID` or use the `-u` option. The `Conversion ID` is the last part of the URL of the conversation, for example, the `Conversion ID` of `https://chat.openai.com/conv/1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p` is `1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p`(example, not usable).
@@ -51,8 +53,13 @@ optional arguments:
 
 ### Use prompts to teach ChatGPT to write eBPF programs
 
-```sh
-./GPTtrace.py --train
+```console
+$ ./GPTtrace.py --train
+----------------------------
+Training ChatGPT with `1.md`
+----------------------------
+....
+Trained session: cbd73f64-64b8-4f1d-80d3-c5f4f2fe292e
 ```
 
 This will use the material in the `prompts` directory to teach ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
@@ -95,3 +102,4 @@ MIT
 - detail documents and tutorials about how we train ChatGPT to write eBPF programs: https://github.com/eunomia-bpf/bpf-developer-tutorial （基于 CO-RE (一次编写，到处运行） libbpf 的 eBPF 开发者教程：通过 20 个小工具一步步学习 eBPF（尝试教会 ChatGPT 编写 eBPF 程序）
 - bpftrace: https://github.com/iovisor/bpftrace
 - ChatGPT: https://chat.openai.com/
+- Python API: https://github.com/mmabrouk/chatgpt-wrapper
