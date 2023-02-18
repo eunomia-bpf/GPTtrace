@@ -1,5 +1,11 @@
 # GPTtrace
 
+Generate eBPF programs and tracing with ChatGPT and natural language
+
+For example:
+
+![result](doc/result.png)
+
 ## Usage
 
 ```console
