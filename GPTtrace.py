@@ -21,11 +21,12 @@ def main():
     group.add_argument(
         "-i", "--info", help="Let ChatGPT explain what's eBPF", action="store_true")
     group.add_argument(
-        "-v", "--verbose", help="Print the prompt and receive message", action="store_true")
-    group.add_argument(
         "-e", "--execute", help="Generate commands using your input with ChatGPT, and run it", action="store", metavar="TEXT")
     group.add_argument(
         "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
+    
+    parser.add_argument(
+        "-v", "--verbose", help="Print the prompt and receive message", action="store_true")
     parser.add_argument(
         "-u", "--uuid", help=f"Conversion UUID to use, or passed through environment variable `{ENV_UUID}`")
     parser.add_argument("-t", "--access-token",
