@@ -11,7 +11,6 @@ from marko.inline import RawText
 ENV_UUID = "GPTTRACE_CONV_UUID"
 ENV_ACCESS_TOKEN = "GPTTRACE_ACCESS_TOKEN"
 
-
 def main():
     parser = argparse.ArgumentParser(
         prog='GPTtrace',
@@ -50,9 +49,7 @@ def main():
         print(f"Command to run: {parsed[0]}")
         os.system(parsed[0])
 
-
-
-def generate_result(bot: Chatbot, text: str, session: str | None, print_out: bool = False) -> str:
+def generate_result(bot: Chatbot, text: str, session: str = None, print_out: bool = False) -> str:
     from io import StringIO
     prev_text = ""
     buf = StringIO()
@@ -69,7 +66,6 @@ def generate_result(bot: Chatbot, text: str, session: str | None, print_out: boo
         print()
     return buf.getvalue()
 
-
 def extract_code_blocks(text: str) -> List[str]:
     result = []
     parser = Parser()
@@ -79,7 +75,6 @@ def extract_code_blocks(text: str) -> List[str]:
             blk: RawText = block.children[0]
             result.append(blk.children)
     return result
-
 
 if __name__ == "__main__":
     main()
