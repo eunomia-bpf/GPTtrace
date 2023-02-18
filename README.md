@@ -4,15 +4,17 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 
 ## Key Features 💡
 
-- Interact and Tracing your Linux with natural language, it can tell how to write eBPF programs in `BCC`, `libbpf` styles.
+### Interact and Tracing your Linux with natural language, it can tell how to write eBPF programs in `BCC`, `libbpf` styles.
 
 ![result](doc/result.png)
 
-- Generate eBPF programs with natural language
+### Generate eBPF programs with natural language
 
 ![generate](doc/generate.png)
 
-## Usage
+For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`https://github.com/eunomia-bpf/bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （基于 CO-RE (一次编写，到处运行） libbpf 的 eBPF 开发者教程：通过 20 个小工具一步步学习 eBPF（尝试教会 ChatGPT 编写 eBPF 程序）
+
+## Usage and Setup 🛠
 
 ```console
 $ ./GPTtrace.py
@@ -34,12 +36,20 @@ optional arguments:
                         `GPTTRACE_ACCESS_TOKEN`
 ```
 
-In order to login with ChatGPT:
+### First: login to ChatGPT
 
 - get the `Conversion ID` from ChatGPT, and then set it to the environment variable `GPTTRACE_CONV_UUID` or use the `-u` option. The `Conversion ID` is the last part of the URL of the conversation, for example, the `Conversion ID` of `https://chat.openai.com/conv/1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p` is `1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p`(example, not usable).
 - get the `access token` from ChatGPT, and then set it to the environment variable `GPTTRACE_ACCESS_TOKEN` or use the `-t` option. see `https://chat.openai.com/api/auth/session` for the access token.
 
-```console
+### Use prompts to teach ChatGPT to write eBPF programs
+
+TODO
+
+### start your tracing! 🚀
+
+```sh
+./GPTtrace -e "Count page faults by process"
+```
 
 ## Installation 🔧
 
@@ -59,6 +69,10 @@ In order to login with ChatGPT:
 - Count LLC cache misses by process name and PID (uses PMCs):
 - Profile user-level stacks at 99 Hertz, for PID 189:
 - Files opened, for processes in the root cgroup-v2
+
+## LICENSE
+
+MIT
 
 ## 🔗 Links
 
