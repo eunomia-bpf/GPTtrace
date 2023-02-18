@@ -65,6 +65,8 @@ For example:
 ./GPTtrace.py -e "Count page faults by process"
 ```
 
+If the eBPF program cannot be loaded into the kernel, The error message will be used to correct ChatGPT, and the result will be printed to the console.
+
 ## Installation 🔧
 
 ```sh
