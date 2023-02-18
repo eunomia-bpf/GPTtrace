@@ -52,7 +52,7 @@ optional arguments:
 ### Use prompts to teach ChatGPT to write eBPF programs
 
 ```sh
-./GPTtrace.py -t
+./GPTtrace.py --train
 ```
 
 This will use the material in the `prompts` directory to teach ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
