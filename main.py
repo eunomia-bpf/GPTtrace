@@ -25,16 +25,12 @@ def main():
     group.add_argument(
         "-e", "--execute", help="Generate commands using your input with ChatGPT, and run it", action="store", metavar="TEXT")
     group.add_argument(
-        "-g", "--execute", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
+        "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
     parser.add_argument(
         "-u", "--uuid", help=f"Conversion UUID to use, or passed through environment variable `{ENV_UUID}`")
     parser.add_argument("-t", "--access-token",
                         help=f"ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through `{ENV_ACCESS_TOKEN}`")
     args = parser.parse_args()
-
-    if (args.info or args.execute) is None:
-        parser.print_help()
-        return
 
     access_token = args.access_token or os.environ.get(ENV_ACCESS_TOKEN, None)
     conv_uuid = args.uuid or os.environ.get(ENV_UUID, None)
@@ -55,7 +51,25 @@ def main():
         # print(f"Command to run: {parsed}")
         print("Press Ctrl+C to stop the program....")
         os.system("sudo " + parsed)
+    elif args.generate is not None:
+        desc: str = args.generate
+        print("Sending query to ChatGPT: " + desc)
+        ret_val = generate_result(
+            chatbot, construct_generate_prompt(desc), conv_uuid, True)
+        # print(ret_val)
+        parsed = extract_code_blocks(ret_val)
+        # print(f"Command to run: {parsed}")
+        with open("generated.bpf.c", "w") as f:
+            for code in parsed:
+                f.write(code)
+    else:
+        parser.print_help()
 
+def construct_generate_prompt(text: str) -> str:
+    return f'''You are now a translater from human language to {os.uname()[0]} eBPF programs.
+Please write eBPF programs for me.
+No explanation required, no instruction required, don't tell me how to compile and run.
+What I want is a eBPF program for: {text}.'''
 
 def construct_running_prompt(text: str) -> str:
     return f'''You are now a translater from human language to {os.uname()[0]} shell bpftrace command. 

@@ -10,7 +10,7 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 
 - Generate eBPF programs with natural language
 
-
+![generate](doc/generate.png)
 
 ## Usage
 
