@@ -1,6 +1,8 @@
 #! /bin/env python3
 import argparse
 import os
+import time
+
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -109,8 +111,9 @@ def main():
                 input_data = f.read()
             if args.verbose:
                 print(input_data)
-            _, session = generate_result(
+            resp, session = generate_result(
                 chatbot, input_data, conv_uuid, args.verbose)
+            time.sleep(2.4)
         print(f"Trained session: {session}")
     else:
         parser.print_help()
