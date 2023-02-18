@@ -1,7 +1,8 @@
 #! /bin/env python3
 import argparse
 import os
-from typing import List
+from pathlib import Path
+from typing import List, Optional, Tuple
 
 import pygments
 from marko.block import FencedCode
@@ -16,6 +17,8 @@ from revChatGPT.V1 import Chatbot
 ENV_UUID = "GPTTRACE_CONV_UUID"
 ENV_ACCESS_TOKEN = "GPTTRACE_ACCESS_TOKEN"
 
+PROMPTS_DIR = Path("./prompts")
+
 
 def pretty_print(input, lexer=MarkdownLexer):
     tokens = list(pygments.lex(input, lexer=lexer()))
@@ -29,6 +32,7 @@ def main():
     )
 
     group = parser.add_mutually_exclusive_group()
+
     group.add_argument(
         "-i", "--info", help="Let ChatGPT explain what's eBPF", action="store_true"
     )
@@ -40,19 +44,10 @@ def main():
         metavar="TEXT",
     )
     group.add_argument(
-        "-g",
-        "--generate",
-        help="Generate eBPF programs using your input with ChatGPT",
-        action="store",
-        metavar="TEXT",
-    )
+        "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
+    group.add_argument(
+        "--train", help="Train ChatGPT with conversions we provided", action="store_true")
 
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        help="Print the prompt and receive message",
-        action="store_true",
-    )
     parser.add_argument(
         "-u",
         "--uuid",
@@ -78,10 +73,8 @@ def main():
     elif args.execute is not None:
         desc: str = args.execute
         print("Sending query to ChatGPT: " + desc)
-        ret_val = generate_result(
-            chatbot, construct_running_prompt(desc), conv_uuid, args.verbose
-        )
-        pretty_print(ret_val)
+        ret_val, _ = generate_result(
+            chatbot, construct_running_prompt(desc), conv_uuid, args.verbose)
         # print(ret_val)
         parsed = make_executable_command(ret_val)
         # print(f"Command to run: {parsed}")
@@ -90,15 +83,32 @@ def main():
     elif args.generate is not None:
         desc: str = args.generate
         print("Sending query to ChatGPT: " + desc)
-        ret_val = generate_result(
-            chatbot, construct_generate_prompt(desc), conv_uuid, True
-        )
-        # print(ret_val)
+        ret_val, _ = generate_result(
+            chatbot, construct_generate_prompt(desc), conv_uuid)
+        pretty_print(ret_val)
         parsed = extract_code_blocks(ret_val)
         # print(f"Command to run: {parsed}")
         with open("generated.bpf.c", "w") as f:
             for code in parsed:
                 f.write(code)
+    elif args.train:
+        prompts = os.listdir(PROMPTS_DIR)
+        prompts.sort()
+        # conv_uuid could be None, in which we will create a new session and use it in the next steps
+        session = conv_uuid
+        for file in prompts:
+            info = f"Training ChatGPT with `{file}`"
+            print("-"*len(info))
+            print(info)
+            print("-"*len(info))
+            with open(PROMPTS_DIR/file, "r") as f:
+                input_data = f.read()
+            if args.verbose:
+                print(input_data)
+            print("-"*len(info))
+            _, session = generate_result(
+                chatbot, input_data, conv_uuid, args.verbose)
+        print(f"Trained session: {session}")
     else:
         parser.print_help()
 
@@ -108,6 +118,7 @@ def construct_generate_prompt(text: str) -> str:
 Please write eBPF programs for me.
 No explanation required, no instruction required, don't tell me how to compile and run.
 What I want is a eBPF program for: {text}."""
+
 
 
 def construct_running_prompt(text: str) -> str:
@@ -134,22 +145,24 @@ def make_executable_command(command: str) -> str:
     return command
 
 
-def generate_result(
-    bot: Chatbot, text: str, session: str = None, print_out: bool = False
-) -> str:
+def generate_result(bot: Chatbot, text: str, session: Optional[str] = None, print_out: bool = False) -> Tuple[str, str]:
     from io import StringIO
 
     prev_text = ""
     buf = StringIO()
-    for data in bot.ask(text, conversation_id=session):
-        message = data["message"][len(prev_text) :]
+    received_session = ""
+    for data in bot.ask(
+        text, conversation_id=session
+    ):
+        received_session = data["conversation_id"]
+        message = data["message"][len(prev_text):]
         if print_out:
             print(message, end="", flush=True)
         buf.write(message)
         prev_text = data["message"]
     if print_out:
         print()
-    return buf.getvalue()
+    return buf.getvalue(), received_session
 
 
 def extract_code_blocks(text: str) -> List[str]:

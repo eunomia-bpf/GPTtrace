@@ -1,12 +1,20 @@
 # GPTtrace 🤖
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Actions Status](https://github.com/eunomia-bpf/eunomia-bpf/workflows/Ubuntu/badge.svg)](https://github.com/eunomia-bpf/eunomia-bpf/actions)
+[![DeepSource](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf.svg/?label=active+issues&show_trend=true&token=rcSI3J1-gpwLIgZWtKZC-N6C)](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf/?ref=repository-badge)
+[![CodeFactor](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf/badge)](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf)
+
+
 Generate eBPF programs and tracing with ChatGPT and natural language
 
 ## Key Features 💡
 
 ### Interact and Tracing your Linux with natural language, it can tell how to write eBPF programs in `BCC`, `libbpf` styles.
 
-![result](doc/result.png)
+example: tracing with Count page faults by process
+
+![result](doc/result.gif)
 
 ### Generate eBPF programs with natural language
 
@@ -43,12 +51,18 @@ optional arguments:
 
 ### Use prompts to teach ChatGPT to write eBPF programs
 
-TODO
+```sh
+./GPTtrace.py -t
+```
+
+This will use the material in the `prompts` directory to teach ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
 
 ### start your tracing! 🚀
 
+For example:
+
 ```sh
-./GPTtrace -e "Count page faults by process"
+./GPTtrace.py -e "Count page faults by process"
 ```
 
 ## Installation 🔧
