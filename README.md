@@ -74,6 +74,23 @@ For example:
 
 If the eBPF program cannot be loaded into the kernel, The error message will be used to correct ChatGPT, and the result will be printed to the console.
 
+## How it works
+
+1. GPTtrace pre-trains its eBPF programs using various eBPF development resources, has multiple conversations with ChatGPT to teach it how to write different types of eBPF programs and bpftrace DSLs.
+2. The user inputs their request in natural language, and GPTtrace calls the ChatGPT API to generate an eBPF program. The generated program is then executed via shell or written to a file for compilation and execution.
+3. If there are errors in compilation or loading, the error is sent back to ChatGPT to generate a new eBPF program or command.
+
+## Room for improvement
+
+There is still plenty of room for improvement, including:
+
+1. Once the ChatGPT can search online, it should be much better to let the tool get sample programs from the bcc/bpftrace repository and learn them, or let the tool look at Stack Overflow or something to see how to write eBPF programs, similar to the method used in new Bing search.
+2. Providing more high-quality documentation and tutorials to improve the accuracy of the output and the quality of the code examples.
+3. Making multiple calls to other tools to execute commands and return results. For example, GPTtrace could output a command, have bpftrace query the current kernel version and supported tracepoints, and return the output as part of the conversation.
+4. Incorporating user feedback to improve the quality of the generated code and refine the natural language processing capabilities of the tool.
+
+And also, new LLM models will certainly lead to more realistic and accurate language generation.
+
 ## Installation 🔧
 
 ```sh
