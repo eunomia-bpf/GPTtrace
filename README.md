@@ -44,7 +44,7 @@ optional arguments:
                         `GPTTRACE_ACCESS_TOKEN`
 ```
 
-Note that the `GPTtrace` tool now is not a complete toolset, and it is not recommended to use it in production. We are working to make it more stable and complete!
+**Note that the `GPTtrace` tool now is only a demo project, and it is not recommended to use it in production. We are working to make it more stable and complete!**
 
 ### First: login to ChatGPT
 
