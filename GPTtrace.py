@@ -16,6 +16,8 @@ from pygments.token import Token
 from pygments_markdown_lexer import MarkdownLexer
 from revChatGPT.V1 import Chatbot
 
+import tempfile
+import shutil
 ENV_UUID = "GPTTRACE_CONV_UUID"
 ENV_ACCESS_TOKEN = "GPTTRACE_ACCESS_TOKEN"
 
@@ -85,7 +87,27 @@ def main():
         parsed = make_executable_command(ret_val)
         # print(f"Command to run: {parsed}")
         print("Press Ctrl+C to stop the program....")
-        os.system("sudo " + parsed)
+        ok = False
+        session = None
+        for i in range(1, 5+1):
+            stderr_out = tempfile.mktemp()
+            if os.system(f"sudo {parsed} 2> {stderr_out}") != 0:
+                with open(stderr_out, "r") as f:
+                    stderr_content = f.read()
+                print("Failed to run: ")
+                print(stderr_content)
+                print(
+                    f"Failed to run bpftrace with generated command: {parsed}, sending errors to ChatGPT and re-train....")
+                resp, session = generate_result(
+                    chatbot, f"bpftrace gives me the following error on command you generated: {stderr_out}", session, args.verbose)
+                if args.verbose:
+                    print(resp)
+            else:
+                ok = True
+            shutil.rmtree(stderr_out, True)
+        if not ok:
+            print("Retry times exceeded..")
+
     elif args.generate is not None:
         desc: str = args.generate
         print("Sending query to ChatGPT: " + desc)
