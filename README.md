@@ -5,7 +5,6 @@
 [![DeepSource](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf.svg/?label=active+issues&show_trend=true&token=rcSI3J1-gpwLIgZWtKZC-N6C)](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf/?ref=repository-badge)
 [![CodeFactor](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf/badge)](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf)
 
-
 Generate eBPF programs and tracing with ChatGPT and natural language
 
 ## Key Features 💡
@@ -20,7 +19,9 @@ example: tracing with Count page faults by process
 
 ![generate](doc/generate.png)
 
-For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`https://github.com/eunomia-bpf/bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （基于 CO-RE (一次编写，到处运行） libbpf 的 eBPF 开发者教程：通过 20 个小工具一步步学习 eBPF（尝试教会 ChatGPT 编写 eBPF 程序）
+For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
+
+**Note that the `GPTtrace` tool now is only a demo project to show how it works, the result may not be accuracy, and it is not recommended to use it in production. We are working to make it more stable and complete!**
 
 ## Usage and Setup 🛠
 
@@ -43,8 +44,6 @@ optional arguments:
                         ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through
                         `GPTTRACE_ACCESS_TOKEN`
 ```
-
-**Note that the `GPTtrace` tool now is only a demo project, and it is not recommended to use it in production. We are working to make it more stable and complete!**
 
 ### First: login to ChatGPT
 
