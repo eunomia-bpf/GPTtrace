@@ -47,35 +47,46 @@ def main():
         "-v", "--verbose", help="Show more details", action="store_true")
     parser.add_argument(
         "-k", "--key",
-        help=f"openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`")
+        help=f"Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`")
     group.add_argument(
         "-t", "--train", help="Train ChatGPT with conversions we provided", action="store_true")
     args = parser.parse_args()
     opeanai_api_key = args.key or os.environ.get(OPENAI_API_KEY, None)
     if opeanai_api_key is None:
         print(
-            f"Either provide your access token through `-t` or through environment variable {OPENAI_API_KEY}"
-        )
+            f"Either provide your access token through `-t` or through environment variable {OPENAI_API_KEY}")
         return
-    query_gpt = init(args.verbose, args.train)
+    agent_chain, index = init(args.train, args.verbose)
     if args.info:
-        response = query_gpt(input="Explain what's eBPF")
+        user_input = "Explain what's eBPF"
+        if args.train:
+            info = get_doc_content_for_query(index, user_input)
+            if info is not None:
+                user_input = user_input + info
+        response = agent_chain.run(input=user_input)
         pretty_print(response)
     elif args.execute is not None:
         user_input = args.execute
-        execute(query_gpt, user_input, args.verbose)
+        execute(agent_chain, user_input, index, args.verbose)
     elif args.generate is not None:
-        desc: str = args.generate
-        print("Sending query to ChatGPT: " + desc)
-        response = query_gpt(input=construct_generate_prompt(desc))
+        user_input: str = args.generate
+        print("Sending query to ChatGPT: " + user_input)
+        prompt = construct_generate_prompt(user_input)
+        if args.train:
+            info = get_doc_content_for_query(index, user_input)
+            if info is not None:
+                prompt = prompt + info
+        response = agent_chain.run(input=prompt)
         pretty_print(response)
         parsed = extract_code_blocks(response)
-        with open("generated.bpf.c", "w") as f:
-            for code in parsed:
-                f.write(code)
+        if parsed != []:
+            with open("generated.bpf.c", "w") as f:
+                for code in parsed:
+                    f.write(code)
+        else:
+            print("It's seems that GPT not generate a ebpf program, what it generate as following:\n{response}")
     else:
         parser.print_help()
-
 
 def construct_generate_prompt(text: str) -> str:
     return f"""You are now a translater from human language to {os.uname()[0]} eBPF programs.
@@ -92,6 +103,18 @@ Your response should be able to put into a shell and run directly.
 Just output in one line, without any description, or any other text that cannot be run in shell.
 What should I type to shell to trace using bpftrace for: {text}, in one line."""
 
+def get_doc_content_for_query(index, query, similarity_top_k: int=3):
+    response = index.query(query, response_mode="no_text", 
+                           similarity_cutoff=0.6, similarity_top_k=similarity_top_k)
+    related_contents = response.source_nodes
+    if related_contents is not None:
+        contents = "\nThere are some related information about this query:\n"
+        for i, content in enumerate(related_contents):
+            info = f"Info {i}: {content.source_text}\n"
+            contents += info
+        return contents
+    else:
+        return None
 
 def make_executable_command(command: str) -> str:
     if command.startswith("\n"):
@@ -106,40 +129,31 @@ def make_executable_command(command: str) -> str:
     command = command.split("User: ")[0]
     return command
 
-def init(verbose: bool, need_train: bool) -> function:
+def init(need_train, verbose):
     llm = OpenAI(temperature=0)
+    agent_chain = ConversationChain(llm=llm, verbose=verbose,
+                    memory=ConversationBufferMemory())
     if need_train:
         if not os.path.exists(f"{LOCAL_PATH}/train_data.json"):
             print(f"{LOCAL_PATH}/train_data.josn not found. Training...")
             documents = SimpleDirectoryReader(str(DOC_PATH)).load_data()
-            index = GPTSimpleVectorIndex(documents)
+            index = GPTSimpleVectorIndex(documents, chunk_size_limit=300)
             index.save_to_disk(f"{LOCAL_PATH}/train_data.json")
             print(f"Training completed, {LOCAL_PATH}/train_data.josn has been saved.")
         else:
             index = GPTSimpleVectorIndex.load_from_disk(f"{LOCAL_PATH}/train_data.json")
-        # tools = load_tools(["serpapi", "llm-math"], llm=llm)
-        tool = Tool(
-            name = "ebpf generator",
-            func=lambda q: str(index.query(q)),
-            description="Generate eBPF programs and tracing with ChatGPT and natural language",
-            return_direct=True)
-        memory = ConversationBufferMemory(memory_key="chat_history")
-        agent_chain = initialize_agent([tool], llm, 
-                                       agent="conversational-react-description", 
-                                       memory=memory, verbose=verbose)
-        query_gpt = agent_chain.run
     else:
-        agent_chain = ConversationChain(
-                        llm=llm,
-                        verbose=True,
-                        memory=ConversationBufferMemory())
-        query_gpt = agent_chain.predict
-    return query_gpt
+        index = None
+    return agent_chain,index
 
-def execute(query_gpt: function, user_input: str, verbose: bool) -> None:
+def execute(agent_chain, user_input: str, index=None, verbose: bool=False) -> None:
     print("Sending query to ChatGPT: " + user_input)
     prompt = construct_running_prompt(user_input)
-    response = query_gpt(input=prompt)
+    if index is not None:
+        info = get_doc_content_for_query(index, user_input)
+        if info is not None:
+            prompt = prompt + info
+    response = agent_chain.run(input=prompt)
     parsed = make_executable_command(response)
     print(f"The command generated by gpt is: {parsed}")
     print("Press Ctrl+C to stop the command....")
@@ -153,12 +167,12 @@ def execute(query_gpt: function, user_input: str, verbose: bool) -> None:
             print(stderr_content)
             print(
                 f"Failed to run bpftrace with generated command: {parsed}, sending errors to ChatGPT and re-train....")
-            response = query_gpt(
-                input=f"bpftrace gives me the following error on command you generated: {stderr_content}, please fix the command according to this error.")
+            response = agent_chain.run(
+                input=f"bpftrace gives me the following error on command you generated: `{stderr_content}`, please fix the command according to this error.")
             parsed = make_executable_command(response)
             if verbose:
                 print(response)
-            if not parsed.startswith("bpftrace"):
+            if (not parsed.startswith("bpftrace")) or (not parsed.startswith("sudo")):
                 continue
         else:
             ok = True
