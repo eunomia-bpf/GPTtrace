@@ -13,13 +13,19 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 
 example: tracing with Count page faults by process
 
-![result](doc/result.gif)
+![result](doc/result.png)
 
 ### Generate eBPF programs with natural language
 
+```shell
+$./GPTtrace.py -g "Write a program that installs a tracepoint handler which is triggered by write syscall"
+```
+
 ![generate](doc/generate.png)
 
-For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
+The generated eBPF program will be stored in the generate.bpf.c file, and you can compile this program using the clang or ecc tools.
+
+For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （a libbpf tool tutorial to teach ChatGPT to write eBPF programs).
 
 **Note that the `GPTtrace` tool now is only a demo project to show how it works, the result may not be accuracy, and it is not recommended to use it in production. We are working to make it more stable and complete!**
 
@@ -27,41 +33,42 @@ For detail documents and tutorials about how we train ChatGPT to write eBPF prog
 
 ```console
 $ ./GPTtrace.py
-usage: GPTtrace [-h] [-i | -v | -e TEXT | -g TEXT] [-u UUID] [-t ACCESS_TOKEN]
+usage: GPTtrace [-h] [-i] [-e TEXT] [-g TEXT] [-v] [-k KEY] [-t]
 
 Use ChatGPT to write eBPF programs (bpftrace, etc.)
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -i, --info            Let ChatGPT explain what's eBPF
-  -v, --verbose         Print the prompt and receive message
   -e TEXT, --execute TEXT
                         Generate commands using your input with ChatGPT, and run it
   -g TEXT, --generate TEXT
                         Generate eBPF programs using your input with ChatGPT
-  -u UUID, --uuid UUID  Conversion UUID to use, or passed through environment variable `GPTTRACE_CONV_UUID`
-  -t ACCESS_TOKEN, --access-token ACCESS_TOKEN
-                        ChatGPT access token, see `https://chat.openai.com/api/auth/session` or passed through
-                        `GPTTRACE_ACCESS_TOKEN`
+  -v, --verbose         Show more details
+  -k KEY, --key KEY     Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through
+                        `OPENAI_API_KEY`
+  -t, --train           Train ChatGPT with conversions we provided
 ```
 
 ### First: login to ChatGPT
 
-- get the `Conversion ID` from ChatGPT, and then set it to the environment variable `GPTTRACE_CONV_UUID` or use the `-u` option. The `Conversion ID` is the last part of the URL of the conversation, for example, the `Conversion ID` of `https://chat.openai.com/conv/1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p` is `1a2b3c4d-0000-0000-0000-1k2l3m4n5o6p`(example, not usable).
-- get the `access token` from ChatGPT, and then set it to the environment variable `GPTTRACE_ACCESS_TOKEN` or use the `-t` option. see `https://chat.openai.com/api/auth/session` for the access token.
+- Access https://platform.openai.com/docs/quickstart/add-your-api-key，then create your openai api key as following:
+
+  ![image-20230402163041886](doc/api-key.png)
+
+- Remember your key, and then set it to the environment variable `OPENAI_API_KEY` or use the `-k` option.
 
 ### Use prompts to teach ChatGPT to write eBPF programs
 
 ```console
-$ ./GPTtrace.py --train
-----------------------------
-Training ChatGPT with `1.md`
-----------------------------
-....
-Trained session: cbd73f64-64b8-4f1d-80d3-c5f4f2fe292e
+$ $ ./GPTtrace.py --train
+/home/todo/intership/GPTtrace/train_data.josn not found. Training...
+INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total LLM token usage: 0 tokens
+INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total embedding token usage: 4185 tokens
+Training completed, /home/todo/intership/GPTtrace/train_data.josn has been saved.
 ```
 
-This will use the material in the `prompts` directory to teach ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
+When you specify the "--train" option, GPTtrace will search for the most relevant information from the prepared documents, and send them as additional information to ChatGPT, enabling ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
 
 ### start your tracing! 🚀
 
@@ -75,9 +82,15 @@ If the eBPF program cannot be loaded into the kernel, The error message will be 
 
 ## How it works
 
-1. GPTtrace pre-trains its eBPF programs using various eBPF development resources, has multiple conversations with ChatGPT to teach it how to write different types of eBPF programs and bpftrace DSLs.
-2. The user inputs their request in natural language, and GPTtrace calls the ChatGPT API to generate an eBPF program. The generated program is then executed via shell or written to a file for compilation and execution.
-3. If there are errors in compilation or loading, the error is sent back to ChatGPT to generate a new eBPF program or command.
+Step 1: Prepare the document and convert it to plain text format. Cut the document into several small chunks. 
+
+Step 2: Call the text-to-vector interface to convert each chunk into a vector and store it in the vector database. 
+
+Step 3: When a user  inputs their request in natural language, convert the request into a vector and search the vector database to get the highest relevance one or several chunks. 
+
+Step 4: Merge the request and chunk, rewrite it into a new request, and GPTtrace calls the ChatGPT API to generate an eBPF program. The generated program is then executed via shell or written to a file for compilation and execution.
+
+Step5: If there are errors in compilation or loading, the error is sent back to ChatGPT to generate a new eBPF program or command.
 
 ## Room for improvement
 
