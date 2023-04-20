@@ -62,10 +62,10 @@ options:
 
 ```console
 $ $ ./GPTtrace.py --train
-/home/todo/intership/GPTtrace/train_data.josn not found. Training...
+/home/todo/intership/GPTtrace/vector_index.josn not found. Training...
 INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total LLM token usage: 0 tokens
 INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total embedding token usage: 4185 tokens
-Training completed, /home/todo/intership/GPTtrace/train_data.josn has been saved.
+Training completed, /home/todo/intership/GPTtrace/vector_index.josn has been saved.
 ```
 
 When you specify the "--train" option, GPTtrace will search for the most relevant information from the prepared documents, and send them as additional information to ChatGPT, enabling ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.

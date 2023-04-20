@@ -1,0 +1,3 @@
+[submodule "bpf_tutorial"]
+	path = bpf_tutorial
+	url = https://github.com/eunomia-bpf/bpf-developer-tutorial
