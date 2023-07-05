@@ -1,4 +1,4 @@
-#! /bin/env python3
+#! /bin/env python
 import argparse
 import os
 import pathlib
@@ -18,6 +18,7 @@ from langchain.agents import initialize_agent
 from langchain.chains import ConversationChain
 from langchain.agents import Tool
 from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader
+from bcc_tools import bcc_tools
 
 OPENAI_API_KEY = "OPENAI_API_KEY"
 PROMPTS_DIR = pathlib.Path("./prompts")
@@ -34,27 +35,28 @@ def main():
         description="Use ChatGPT to write eBPF programs (bpftrace, etc.)",
     )
 
-    group = parser
-    group.add_argument(
+    parser.add_argument(
         "-i", "--info", help="Let ChatGPT explain what's eBPF", action="store_true")
-    group.add_argument(
+    parser.add_argument(
+        "-b", "--bcc", help="Use the bcc tool to complete the trace task", action="store", metavar="TEXT")
+    parser.add_argument(
         "-e", "--execute",
         help="Generate commands using your input with ChatGPT, and run it",
         action="store", metavar="TEXT")
-    group.add_argument(
+    parser.add_argument(
         "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
     parser.add_argument(
         "-v", "--verbose", help="Show more details", action="store_true")
     parser.add_argument(
         "-k", "--key",
         help=f"Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`")
-    group.add_argument(
+    parser.add_argument(
         "-t", "--train", help="Train ChatGPT with conversions we provided", action="store_true")
     args = parser.parse_args()
-    opeanai_api_key = args.key or os.environ.get(OPENAI_API_KEY, None)
-    if opeanai_api_key is None:
-        print(
-            f"Either provide your access token through `-t` or through environment variable {OPENAI_API_KEY}")
+    if args.key is not None:
+        os.environ["OPENAI_API_KEY"] = args.key
+    if os.environ.get(OPENAI_API_KEY, None) is None:
+        print(f"Either provide your access token through `-t` or through environment variable {OPENAI_API_KEY}")
         return
     agent_chain, index = init(args.train, args.verbose)
     if args.info:
@@ -65,6 +67,8 @@ def main():
                 user_input = user_input + info
         response = agent_chain.predict(input=user_input)
         pretty_print(response)
+    elif args.bcc is not None:
+        bcc_tools(args.bcc, args.verbose)
     elif args.execute is not None:
         user_input = args.execute
         execute(agent_chain, user_input, index, args.verbose)
