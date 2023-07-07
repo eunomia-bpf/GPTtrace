@@ -18,7 +18,7 @@ from langchain.agents import initialize_agent
 from langchain.chains import ConversationChain
 from langchain.agents import Tool
 from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader
-from bcc_tools import bcc_tools
+from command import cmd_parser 
 
 OPENAI_API_KEY = "OPENAI_API_KEY"
 PROMPTS_DIR = pathlib.Path("./prompts")
@@ -34,29 +34,41 @@ def main():
         prog="GPTtrace",
         description="Use ChatGPT to write eBPF programs (bpftrace, etc.)",
     )
-
     parser.add_argument(
-        "-i", "--info", help="Let ChatGPT explain what's eBPF", action="store_true")
+        "-i", "--info", 
+        help="Let ChatGPT explain what's eBPF", 
+        action="store_true")
     parser.add_argument(
-        "-b", "--bcc", help="Use the bcc tool to complete the trace task", action="store", metavar="TEXT")
+        "-c", "--cmd", 
+        help="Use the bcc tool to complete the trace task", 
+        nargs=2, 
+        metavar=("CMD_NAME", "QUERY"))
     parser.add_argument(
         "-e", "--execute",
         help="Generate commands using your input with ChatGPT, and run it",
-        action="store", metavar="TEXT")
+        metavar="EXEC_QUERY")
     parser.add_argument(
-        "-g", "--generate", help="Generate eBPF programs using your input with ChatGPT", action="store", metavar="TEXT")
+        "-g", "--generate", 
+        help="Generate eBPF programs using your input with ChatGPT", 
+        metavar="GEN_QUERY")
     parser.add_argument(
-        "-v", "--verbose", help="Show more details", action="store_true")
+        "-v", "--verbose", 
+        help="Show more details", 
+        action="store_true")
     parser.add_argument(
         "-k", "--key",
-        help=f"Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`")
+        help=f"Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`", 
+        metavar="OPENAI_API_KEY")
     parser.add_argument(
-        "-t", "--train", help="Train ChatGPT with conversions we provided", action="store_true")
+        "-t", "--train", 
+        help="Train ChatGPT with conversions we provided", 
+        action="store_true")
     args = parser.parse_args()
+
     if args.key is not None:
         os.environ["OPENAI_API_KEY"] = args.key
     if os.environ.get(OPENAI_API_KEY, None) is None:
-        print(f"Either provide your access token through `-t` or through environment variable {OPENAI_API_KEY}")
+        print(f"Either provide your access token through `-k` or through environment variable {OPENAI_API_KEY}")
         return
     agent_chain, index = init(args.train, args.verbose)
     if args.info:
@@ -67,8 +79,8 @@ def main():
                 user_input = user_input + info
         response = agent_chain.predict(input=user_input)
         pretty_print(response)
-    elif args.bcc is not None:
-        bcc_tools(args.bcc, args.verbose)
+    elif args.cmd is not None:
+        cmd_parser(args.cmd[0], args.cmd[1], args.verbose)
     elif args.execute is not None:
         user_input = args.execute
         execute(agent_chain, user_input, index, args.verbose)

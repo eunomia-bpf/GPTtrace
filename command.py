@@ -1,23 +1,24 @@
 import subprocess
 import openai
 import json
-def bcc_tools(query: str, verbose=False):
-    functions = get_functions()
-    suggest_cmds1 = query_suggest_command(functions[:60], query)
-    suggest_cmds2 = query_suggest_command(functions[60:], query)
-    suggest_cmds = suggest_cmds1 + suggest_cmds2
-    if verbose:
-        print("The command list recommended by LLM: ", suggest_cmds)
-    func_list = []
-    for func in functions:
-        if func["name"] in suggest_cmds:
-            func_list.append(func)
+from gen_func_call import gen_func_call
 
+def cmd_parser(cmd: str, query: str, verbose=False):
+    func_call = None
+    functions = get_predifine_funcs()
+    for func in functions:
+        # Gets the predefined function call
+        if func["name"] == cmd:
+            func_call= func
+            break
+    if func_call is None:
+        # Generate a function call based on a given command
+        func_call = gen_func_call(cmd, verbose)
     messages = [{"role": "user", "content": query}]
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        functions=func_list,
+        functions=[func_call],
         function_call="auto",
     )
     response_message = response["choices"][0]["message"]
@@ -29,7 +30,14 @@ def bcc_tools(query: str, verbose=False):
     else:
         print("LLM does not call any bcc tools.")
 
-def exec_cmd(cmd_name: str, args: str, func_descript: json):
+def exec_cmd(cmd_name: str, args: str, func_descript: json) -> None:
+    """
+    Execute the command
+
+    :param cmd_name: The name of the command
+    :param args: The parameters required to execute the command.
+    :param func_desrcript: The function call description information about the command is in JSON format.
+    """
     full_command = ["sudo"]
     full_command.append(cmd_name)
     positional_arg = None
@@ -50,7 +58,7 @@ def exec_cmd(cmd_name: str, args: str, func_descript: json):
         full_command.append(positional_arg)
     full_command = [str(item) for item in full_command]
     print("\u001b[1;32m", "Run: ", " ".join(full_command), "\u001b[0m")
-    subprocess.run(full_command, text=True)
+    subprocess.run(full_command, text=True, check=True)
 
 def query_suggest_command(functions: json, query: str) -> list:
     # Extract the descriptions of the bcc command
@@ -75,7 +83,7 @@ def query_suggest_command(functions: json, query: str) -> list:
     funcs_suggest = response_message["content"][1:-1].split(", ")
     return funcs_suggest
 
-def get_functions():
+def get_predifine_funcs():
     with open('./funcs.json', 'r') as file:
         data = file.read()
     functions = json.loads(data)
@@ -95,7 +103,6 @@ def is_positional_arg(cmd, arg):
         "btrfsslower-bpfcc": ["min_ms"],
         "cachestat-bpfcc": ["interval", "count"],
         "cachetop-bpfcc": ["interval"],
-        "uobjnew": ["pid", "interval"],
         "cpudist-bpfcc": ["interval", "count"],
         "cpuunclaimed-bpfcc": ["interval", "count"],
         "dbslower-bpfcc": ["engine"],
@@ -110,46 +117,19 @@ def is_positional_arg(cmd, arg):
         "funcslower-bpfcc": ["function"],
         "hardirqs-bpfcc": ["interval", "outputs"],
         "inject-bpfcc": ["base_function", "spec"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "ugc": ["pid"],
-        "uobjnew": ["pid", "interval"],
-        "ustat": ["interval", "count"],
-        "uthreads": ["pid"],
         "llcstat-bpfcc": ["duration"],
         "memleak-bpfcc": ["interval", "count"],
         "nfsdist-bpfcc": ["interval", "count"],
         "nfsslower-bpfcc": ["min_ms"],
-        "ugc": ["pid"],
-        "ustat": ["interval", "count"],
         "offcputime-bpfcc": ["duration"],
         "offwaketime-bpfcc": ["duration"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "ustat": ["interval", "count"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "ustat": ["interval", "count"],
         "profile-bpfcc": ["duration"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "ugc": ["pid"],
-        "ustat": ["interval", "count"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "ugc": ["pid"],
-        "uobjnew": ["pid", "interval"],
-        "ustat": ["interval", "count"],
         "runqlat-bpfcc": ["interval", "count"],
         "runqlen-bpfcc": ["interval", "count"],
         "runqslower-bpfcc": ["min_us"],
         "slabratetop-bpfcc": ["interval", "count"],
         "softirqs-bpfcc": ["interval", "count"],
         "stackcount-bpfcc": ["pattern"],
-        "ucalls": ["pid", "interval"],
-        "uflow": ["pid"],
-        "uobjnew": ["pid", "interval"],
-        "ustat": ["interval", "count"],
         "tcpconnlat-bpfcc": ["duration_ms"],
         "tcpsubnet-bpfcc": ["subnets"],
         "tcptop-bpfcc": ["interval", "count"],
@@ -175,4 +155,4 @@ def is_positional_arg(cmd, arg):
     return False
 
 if __name__ == "__main__":
-    bcc_tools("print 1 second summaries, 10 times", True)
+    cmd_parser("print 1 second summaries, 10 times", True)
