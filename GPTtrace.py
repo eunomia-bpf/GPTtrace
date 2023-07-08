@@ -4,6 +4,7 @@ import os
 import pathlib
 import tempfile
 import shutil
+from langchain import OpenAI
 import pygments
 
 from marko.block import FencedCode
@@ -17,7 +18,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.agents import initialize_agent
 from langchain.chains import ConversationChain
 from langchain.agents import Tool
-from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader
+from llama_index import LLMPredictor, ServiceContext, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
 from command import cmd_parser 
 
 OPENAI_API_KEY = "OPENAI_API_KEY"
@@ -25,11 +26,10 @@ PROMPTS_DIR = pathlib.Path("./prompts")
 DOC_PATH = "./bpf_tutorial/src"
 LOCAL_PATH = pathlib.Path(__file__).resolve().parent
 
-def pretty_print(input, lexer=MarkdownLexer, *args, **kwargs):
-    tokens = list(pygments.lex(input, lexer=lexer()))
-    print_formatted_text(PygmentsTokens(tokens), *args, **kwargs)
-
-def main():
+def main() -> None:
+    """
+    Program entry.
+    """
     parser = argparse.ArgumentParser(
         prog="GPTtrace",
         description="Use ChatGPT to write eBPF programs (bpftrace, etc.)",
@@ -104,13 +104,29 @@ def main():
     else:
         parser.print_help()
 
+def pretty_print(input, lexer=MarkdownLexer, *args, **kwargs) -> None:
+    tokens = list(pygments.lex(input, lexer=lexer()))
+    print_formatted_text(PygmentsTokens(tokens), *args, **kwargs)
+
 def construct_generate_prompt(text: str) -> str:
+    """
+    Construct a prompt that generates BPF code.
+
+    :param text: User request.
+    :return: Prompt.
+    """
     return f"""You are now a translater from human language to {os.uname()[0]} eBPF programs.
 Please write eBPF programs for me.
 No explanation required, no instruction required, don't tell me how to compile and run.
 What I want is just a eBPF program with markdown format for: {text}."""
 
 def construct_running_prompt(text: str) -> str:
+    """
+    Construct prompts that translate user requests into bpf commands.
+
+    :param text: User request.
+    :return: Prompt.
+    """
     return f"""You are now a translater from human language to {os.uname()[0]} shell bpftrace command.
 No explanation required.
 Respond with only the raw shell bpftrace command.
@@ -119,9 +135,16 @@ Your response should be able to put into a shell and run directly.
 Just output in one line, without any description, or any other text that cannot be run in shell.
 What should I type to shell to trace using bpftrace for: {text}"""
 
-def get_doc_content_for_query(index, query, similarity_top_k: int=3):
-    response = index.query(query, response_mode="no_text", 
-                           similarity_top_k=similarity_top_k)
+def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> str:
+    """
+    Find the content from the document that is closest to the user's request
+
+    :param index: Vector database
+    :param query: User's request
+    :return: The content that is most relevant to the user's request.
+    """
+    query_engine = index.as_query_engine()
+    response = query_engine.query(query)
     related_contents = response.source_nodes
     if related_contents is not None:
         contents = "\nThere are some related information about this query:\n"
@@ -133,6 +156,12 @@ def get_doc_content_for_query(index, query, similarity_top_k: int=3):
         return None
 
 def make_executable_command(command: str) -> str:
+    """
+    Remove extra characters from the command from the LLM return result
+
+    :param command: The command from the LLM.
+    :return: The result of the processing.
+    """
     if command.startswith("\n"):
         command = command[1:]
     if command.endswith("\n"):
@@ -145,31 +174,50 @@ def make_executable_command(command: str) -> str:
     command = command.split("User: ")[0]
     return command
 
-def init(need_train, verbose):
+def init(need_train: bool, verbose: bool) -> list[ConversationChain, VectorStoreIndex]:
+    """
+    Initialize the conversation and vector database.
+
+    :param need_train: Whether you need to use a vector database.
+    :verbose: Whether to print extra information.
+    :return agent_chain: A conversation between a human and an AI.
+    :return index: Vector database.
+    """
     llm = ChatOpenAI(model_name="gpt-3.5-turbo",temperature=0)
     agent_chain = ConversationChain(llm=llm, verbose=verbose,
                     memory=ConversationBufferMemory())
     if need_train:
-        if not os.path.exists(f"{LOCAL_PATH}/vector_index.json"):
-            print(f"{LOCAL_PATH}/vector_index.josn not found. Training...")
+        if not os.path.exists(f"{LOCAL_PATH}/vector_index/"):
+            print(f"{LOCAL_PATH}/vector_index not found. Training...")
             md_files = []
             # Get all markdown files in the tutorial
-            for root, dirs, files in os.walk(DOC_PATH):
+            for root, _, files in os.walk(DOC_PATH):
                 for file in files:
                     if file.endswith('.md'):
                         md_files.append(os.path.join(root, file))
             documents = SimpleDirectoryReader(input_files=md_files).load_data()
-            index = GPTSimpleVectorIndex.from_documents(documents)
-            index.save_to_disk(f"{LOCAL_PATH}/vector_index.json")
-            print(f"Training completed, {LOCAL_PATH}/vector_index.josn has been saved.")
+            llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-003"))
+            service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
+            index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+            index.storage_context.persist(f"{LOCAL_PATH}/vector_index")
+            print(f"Training completed, {LOCAL_PATH}/vector_index has been saved.")
         else:
-            print(f"Loading the {LOCAL_PATH}/vector_index.josn...")
-            index = GPTSimpleVectorIndex.load_from_disk(f"{LOCAL_PATH}/vector_index.json")
+            print(f"Loading the {LOCAL_PATH}/vector_index...")
+            storage_context = StorageContext.from_defaults(persist_dir=f"{LOCAL_PATH}/vector_index")
+            index = load_index_from_storage(storage_context)
     else:
         index = None
     return agent_chain, index
 
-def execute(agent_chain, user_input: str, index=None, verbose: bool=False) -> None:
+def execute(agent_chain: ConversationChain, user_input: str, index=None, verbose: bool=False) -> None:
+    """
+    Convert the user request into a BPF command and execute it.
+
+    :param agent_chain: A conversation between a human and an AI.
+    :param user_input: The user's request.
+    :param index: Vector database.
+    :param verbose: Whether to print extra information.
+    """
     print("Sending query to ChatGPT: " + user_input)
     prompt = construct_running_prompt(user_input)
     if index is not None:
@@ -207,6 +255,12 @@ def execute(agent_chain, user_input: str, index=None, verbose: bool=False) -> No
         print("Retry times exceeded...")
 
 def extract_code_blocks(text: str) -> list[str]:
+    """
+    Extract the code block from the returned result.
+
+    :param text: Response result of LLM.
+    :return: List of code block.
+    """
     result = []
     parser = Parser()
     for block in parser.parse(text).children:

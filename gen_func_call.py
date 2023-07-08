@@ -5,7 +5,14 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
 
 
-def gen_func_call(cmd: str, verbose: bool):
+def gen_func_call(cmd: str, verbose: bool) -> str:
+    """
+    Generates a funciton call for the given command.
+
+    :param cmd: Name of command.
+    :verbose: Whether to print extra information.
+    :return: The function call in JSON format corresponding to the command `cmd`.
+    """
     llm = ChatOpenAI(model_name="gpt-3.5-turbo",temperature=0)
     agent_chain = ConversationChain(llm=llm, verbose=verbose,
                     memory=ConversationBufferMemory())
@@ -15,7 +22,13 @@ def gen_func_call(cmd: str, verbose: bool):
     response = agent_chain.predict(input=prompt)
     return response
 
-def get_command_help(command):
+def get_command_help(command) -> str:
+    """
+    Gets help documentation for the command.
+
+    :param command: Name of command.
+    :return: Help documentation for the command.
+    """
     try:
         output = subprocess.check_output([command, '--help'], universal_newlines=True)
         return output
@@ -23,6 +36,13 @@ def get_command_help(command):
         return f"Error executing help command: {e.output}"
 
 def construct_generate_prompt(cmd: str, help_doc: str) -> str:
+    """
+    Construct a prompt that generates a function call.
+
+    :param cmd: Name of command.
+    :param help_doc: Help documentation for the command.
+    :return: Return prompt.
+    """
     example = """```json
 {
     "name": "get_current_weather",

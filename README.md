@@ -13,7 +13,7 @@ Generate eBPF programs and tracing with ChatGPT and natural language
 
 example: tracing with Count page faults by process
 
-![result](doc/result.png)
+<img src="doc/result.png" alt="Image" width="600">
 
 ### Generate eBPF programs with natural language
 
@@ -21,11 +21,31 @@ example: tracing with Count page faults by process
 $./GPTtrace.py -g "Write a program that installs a tracepoint handler which is triggered by write syscall"
 ```
 
-![generate](doc/generate.png)
+<img src="doc/generate.png" alt="Image" width="600">
+
 
 The generated eBPF program will be stored in the generate.bpf.c file, and you can compile this program using the clang or ecc tools.
 
 For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （a libbpf tool tutorial to teach ChatGPT to write eBPF programs).
+
+### Specify the command line tool to complete the tracking task
+
+```console
+$./GPTtrace.py -c memleak-bpfcc "Trace allocations and display each individual allocator function call"
+ Run:  sudo memleak-bpfcc --trace 
+Attaching to kernel allocators, Ctrl+C to quit.
+(b'Relay(35)', 402, 6, b'd...1', 20299.252425, b'alloc exited, size = 4096, result = ffff8881009cc000')
+(b'Relay(35)', 402, 6, b'd...1', 20299.252425, b'free entered, address = ffff8881009cc000, size = 4096')
+(b'Relay(35)', 402, 6, b'd...1', 20299.252426, b'free entered, address = 588a6f, size = 4096')
+(b'Relay(35)', 402, 6, b'd...1', 20299.252427, b'alloc entered, size = 4096')
+(b'Relay(35)', 402, 6, b'd...1', 20299.252427, b'alloc exited, size = 4096, result = ffff8881009cc000')
+(b'Relay(35)', 402, 6, b'd...1', 20299.252428, b'free entered, address = ffff8881009cc000, size = 4096')
+(b'sudo', 6938, 10, b'd...1', 20299.252437, b'alloc entered, size = 2048')
+(b'sudo', 6938, 10, b'd...1', 20299.252439, b'alloc exited, size = 2048, result = ffff88822e845800')
+(b'node', 410, 18, b'd...1', 20299.252455, b'alloc entered, size = 256')
+(b'node', 410, 18, b'd...1', 20299.252457, b'alloc exited, size = 256, result = ffff8882e9b66400')
+(b'node', 410, 18, b'd...1', 20299.252458, b'alloc entered, size = 2048')
+```
 
 **Note that the `GPTtrace` tool now is only a demo project to show how it works, the result may not be accuracy, and it is not recommended to use it in production. We are working to make it more stable and complete!**
 

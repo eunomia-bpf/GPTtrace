@@ -460,6 +460,7 @@
         "properties": {
             "engine": {
                 "type": "string",
+                "enum": ["mysql", "postgres"],
                 "description": "The database engine to use (mysql or postgres)"
             },
             "verbose": {
