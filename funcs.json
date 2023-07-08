@@ -1,0 +1,3906 @@
+[{
+    "name": "argdist-bpfcc",
+    "description": "Trace a function and display a summary of its parameter values",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "ID of the process to trace (optional)"
+            },
+            "string_size": {
+                "type": "integer",
+                "description": "Maximum string size to read from char* arguments"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Output interval, in seconds (default 1 second)"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace, in seconds"
+            },
+            "number": {
+                "type": "integer",
+                "description": "Number of outputs"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print resulting BPF program code before executing"
+            },
+            "cumulative": {
+                "type": "boolean",
+                "description": "Do not clear histograms and freq counts at each interval"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of top results to show (not applicable to histograms)"
+            },
+            "histogram": {
+                "type": "string",
+                "description": "Probe specifier to capture histogram of (see examples below)"
+            },
+            "count": {
+                "type": "string",
+                "description": "Probe specifier to capture count of (see examples below)"
+            },
+            "include": {
+                "type": "string",
+                "description": "Additional header files to include in the BPF program"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "bashreadline-bpfcc",
+    "description": "Print entered bash commands from all running shells",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "shared": {
+                "type": "string",
+                "description": "Specify the location of libreadline.so library. Default is /lib/libreadline.so"
+            }
+        }
+    }
+},
+{
+    "name": "biolatency-bpfcc",
+    "description": "Summarize block device I/O latency as a histogram",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "queued": {
+                "type": "boolean",
+                "description": "Include OS queued time in I/O time"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Millisecond histogram"
+            },
+            "disks": {
+                "type": "boolean",
+                "description": "Print a histogram per disk device"
+            },
+            "flags": {
+                "type": "boolean",
+                "description": "Print a histogram per set of I/O flags"
+            },
+            "json": {
+                "type": "boolean",
+                "description": "JSON output"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "biosnoop-bpfcc",
+    "description": "Trace block I/O",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            },
+            "queue": {
+                "type": "boolean",
+                "description": "Include OS queued time"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "biotop-bpfcc",
+    "description": "Block device (disk) I/O by process",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "maxrows": {
+                "type": "integer",
+                "description": "Maximum rows to print, default 20"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "bitesize-bpfcc",
+    "description": "Command to perform bitesize-bpfcc",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "The city and state, e.g. San Francisco, CA"
+            },
+            "format": {
+                "type": "string",
+                "enum": ["celsius", "fahrenheit"],
+                "description": "The temperature unit to use. Infer this from the user's location."
+            }
+        },
+        "required": ["location", "format"]
+    }
+},
+{
+    "name": "bpflist-bpfcc",
+    "description": "Display processes currently using BPF programs and maps",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            },
+            "verbosity": {
+                "type": "integer",
+                "description": "Count and display kprobes/uprobes as well"
+            }
+        }
+    }
+},
+{
+    "name": "btrfsdist-bpfcc",
+    "description": "Summarize btrfs operation latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "notimestamp": {
+                "type": "boolean",
+                "description": "Don't include timestamp on interval output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Output in milliseconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "btrfsslower-bpfcc",
+    "description": "Trace common btrfs file operations slower than a threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "minimum I/O duration to trace, in ms (default 10)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "just print fields: comma-separated values"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "total duration of trace in seconds"
+            }
+        },
+        "required": ["min_ms"]
+    }
+},
+{
+    "name": "cachestat-bpfcc",
+    "description": "Count cache kernel function calls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "integer",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "integer",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "cachetop-bpfcc",
+    "description": "Show Linux page cache hit/miss statistics including read and write hit % per processes in a UI like top.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "integer",
+                "description": "Interval between probes."
+            }
+        }
+    }
+},
+{
+    "name": "capable-bpfcc",
+    "description": "Trace security capability checks",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Include non-audit checks"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "kernel-stack": {
+                "type": "boolean",
+                "description": "Output kernel stack trace"
+            },
+            "user-stack": {
+                "type": "boolean",
+                "description": "Output user stack trace"
+            },
+            "extra": {
+                "type": "boolean",
+                "description": "Show extra fields in TID and INSETID columns"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            },
+            "unique": {
+                "type": "boolean",
+                "description": "Don't repeat stacks for the same pid or cgroup"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "cobjnew-bpfcc",
+    "description": "Summarize object allocations in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "ruby", "tcl"],
+                "description": "Language to trace"
+            },
+            "top-count": {
+                "type": "integer",
+                "description": "Number of most frequently allocated types to print"
+            },
+            "top-size": {
+                "type": "integer",
+                "description": "Number of largest types by allocated bytes to print"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "cpudist-bpfcc",
+    "description": "Summarize on-CPU time per task as a histogram",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "offcpu": {
+                "type": "boolean",
+                "description": "Measure off-CPU time"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Millisecond histogram"
+            },
+            "pids": {
+                "type": "boolean",
+                "description": "Print a histogram per process ID"
+            },
+            "tids": {
+                "type": "boolean",
+                "description": "Print a histogram per thread ID"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "cpuunclaimed-bpfcc",
+    "description": "Sample CPU run queues and calculate unclaimed idle CPU",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "Print sample summaries (verbose) as comma-separated values"
+            },
+            "fullcsv": {
+                "type": "boolean",
+                "description": "Print sample summaries with extra fields: CPU sample offsets"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "criticalstat-bpfcc",
+    "description": "Trace long critical sections",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "preemptoff": {
+                "type": "boolean",
+                "description": "Find long sections where preemption was off"
+            },
+            "irqoff": {
+                "type": "boolean",
+                "description": "Find long sections where IRQ was off"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Duration in uS (microseconds) below which we filter"
+            }
+        }
+    }
+},
+{
+    "name": "dbslower-bpfcc",
+    "description": "Command to trace slow database queries using BPFCC",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "engine": {
+                "type": "string",
+                "enum": ["mysql", "postgres"],
+                "description": "The database engine to use (mysql or postgres)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print the BPF program"
+            },
+            "pid": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                },
+                "description": "The pid(s) to trace"
+            },
+            "exe": {
+                "type": "string",
+                "description": "Path to binary"
+            },
+            "threshold": {
+                "type": "integer",
+                "description": "Trace queries slower than this threshold (ms)"
+            }
+        },
+        "required": ["engine"]
+    }
+},
+{
+    "name": "dbstat-bpfcc",
+    "description": "Display a histogram of database query latencies",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "engine": {
+                "type": "string",
+                "enum": ["mysql", "postgres"],
+                "description": "The database engine to use"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print the BPF program"
+            },
+            "pid": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                },
+                "description": "The pid(s) to trace"
+            },
+            "threshold": {
+                "type": "integer",
+                "description": "Trace queries slower than this threshold (ms)"
+            },
+            "microseconds": {
+                "type": "boolean",
+                "description": "Display query latencies in microseconds (default: milliseconds)"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print summary at this interval (seconds)"
+            }
+        },
+        "required": ["engine"]
+    }
+},
+{
+    "name": "dcsnoop-bpfcc",
+    "description": "Trace directory entry cache (dcache) lookups",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            },
+            "all": {
+                "type": "boolean",
+                "description": "Trace all dcache lookups (default is fails only)"
+            }
+        }
+    }
+},
+{
+    "name": "dcstat-bpfcc",
+    "description": "Get statistics about the system using BPF Compiler Collection",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "integer",
+                "description": "The time interval in seconds between each data collection"
+            },
+            "count": {
+                "type": "integer",
+                "description": "The number of times to collect data"
+            }
+        }
+    }
+},
+{
+    "name": "deadlock-bpfcc",
+    "description": "Detect potential deadlocks (lock inversions) in a running binary.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Pid to trace"
+            },
+            "binary": {
+                "type": "string",
+                "description": "If set, trace the mutexes from the binary at this path. For statically-linked binaries, this argument is not required. For dynamically-linked binaries, this argument is required and should be the path of the pthread library the binary is using. Example: /lib/x86_64-linux-gnu/libpthread.so.0"
+            },
+            "dump-graph": {
+                "type": "string",
+                "description": "If set, this will dump the mutex graph to the specified file."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print statistics about the mutex wait graph."
+            },
+            "lock-symbols": {
+                "type": "string",
+                "description": "Comma-separated list of lock symbols to trace. Default is pthread_mutex_lock. These symbols cannot be inlined in the binary."
+            },
+            "unlock-symbols": {
+                "type": "string",
+                "description": "Comma-separated list of unlock symbols to trace. Default is pthread_mutex_unlock. These symbols cannot be inlined in the binary."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "drsnoop-bpfcc",
+    "description": "Trace direct reclaim",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "print-uid": {
+                "type": "boolean",
+                "description": "Print UID column"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Trace this TID only"
+            },
+            "uid": {
+                "type": "integer",
+                "description": "Trace this UID only"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace in seconds"
+            },
+            "name": {
+                "type": "string",
+                "description": "Only print process names containing this name"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Show system memory state"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "execsnoop-bpfcc",
+    "description": "Trace exec() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "time": {
+                "type": "boolean",
+                "description": "Include time column on output (HH:MM:SS)"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "fails": {
+                "type": "boolean",
+                "description": "Include failed exec()s"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            },
+            "uid": {
+                "type": "string",
+                "description": "Trace this UID only"
+            },
+            "quote": {
+                "type": "boolean",
+                "description": "Add quotemarks (\") around arguments"
+            },
+            "name": {
+                "type": "string",
+                "description": "Only print commands matching this name (regex), any arg"
+            },
+            "line": {
+                "type": "string",
+                "description": "Only print commands where arg contains this line (regex)"
+            },
+            "print-uid": {
+                "type": "boolean",
+                "description": "Print UID column"
+            },
+            "max-args": {
+                "type": "integer",
+                "description": "Maximum number of arguments parsed and displayed, defaults to 20"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "exitsnoop-bpfcc",
+    "description": "Trace all process termination (exit, fatal signal)",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp (local time default)"
+            },
+            "utc": {
+                "type": "boolean",
+                "description": "Include timestamp in UTC (-t implied)"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "label": {
+                "type": "string",
+                "description": "Label each line"
+            },
+            "failed": {
+                "type": "boolean",
+                "description": "Trace only fails, exclude exit(0)"
+            },
+            "per-thread": {
+                "type": "boolean",
+                "description": "Trace per thread termination"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "ext4dist-bpfcc",
+    "description": "Summarize ext4 operation latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "notimestamp": {
+                "type": "boolean",
+                "description": "Don't include timestamp on interval output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Output in milliseconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "ext4slower-bpfcc",
+    "description": "Trace common ext4 file operations slower than a threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "minimum I/O duration to trace, in ms (default 10)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "just print fields: comma-separated values"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "filelife-bpfcc",
+    "description": "Trace stat() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process ID to trace"
+            }
+        }
+    }
+},
+{
+    "name": "rubyobjnew-bpfcc",
+    "description": "Summarize object allocations in high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "ruby", "tcl"],
+                "description": "Language to trace"
+            },
+            "top-count": {
+                "type": "integer",
+                "description": "Number of most frequently allocated types to print"
+            },
+            "top-size": {
+                "type": "integer",
+                "description": "Number of largest types by allocated bytes to print"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "rubystat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "runqlat-bpfcc",
+    "description": "Summarize run queue (scheduler) latency as a histogram",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Millisecond histogram"
+            },
+            "pids": {
+                "type": "boolean",
+                "description": "Print a histogram per process ID"
+            },
+            "pidnss": {
+                "type": "boolean",
+                "description": "Print a histogram per PID namespace"
+            },
+            "tids": {
+                "type": "boolean",
+                "description": "Print a histogram per thread ID"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "runqlen-bpfcc",
+    "description": "Summarize scheduler run queue length as a histogram",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "runqocc": {
+                "type": "boolean",
+                "description": "Report run queue occupancy"
+            },
+            "cpus": {
+                "type": "boolean",
+                "description": "Print output for each CPU separately"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "runqslower-bpfcc",
+    "description": "Trace high run queue latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_us": {
+                "type": "integer",
+                "description": "minimum run queue latency to trace, in us (default 10000)"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "trace this TID only (use for threads only)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "shmsnoop-bpfcc",
+    "description": "Trace shm*() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Trace this TID only"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace in seconds"
+            },
+            "name": {
+                "type": "string",
+                "description": "Only print process names containing this name"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "slabratetop-bpfcc",
+    "description": "Kernel SLAB/SLUB memory cache allocation rate top",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "number of outputs"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "don't clear the screen"
+            },
+            "maxrows": {
+                "type": "integer",
+                "description": "maximum rows to print, default 20"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "sofdsnoop-bpfcc",
+    "description": "Trace file descriptors passed via socket",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Trace this TID only"
+            },
+            "name": {
+                "type": "string",
+                "description": "Only print process names containing this name"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace in seconds"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "softirqs-bpfcc",
+    "description": "Summarize soft irq event time as histograms",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "nanoseconds": {
+                "type": "boolean",
+                "description": "Output in nanoseconds"
+            },
+            "dist": {
+                "type": "boolean",
+                "description": "Show distributions as histograms"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "solisten-bpfcc",
+    "description": "Stream sockets listen",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "show-netns": {
+                "type": "boolean",
+                "description": "Show network namespace"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "netns": {
+                "type": "integer",
+                "description": "Trace this Network Namespace only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "sslsniff-bpfcc",
+    "description": "Sniff SSL data",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Sniff this PID only."
+            },
+            "comm": {
+                "type": "string",
+                "description": "Sniff only commands matching string."
+            },
+            "no-openssl": {
+                "type": "boolean",
+                "description": "Do not show OpenSSL calls."
+            },
+            "no-gnutls": {
+                "type": "boolean",
+                "description": "Do not show GnuTLS calls."
+            },
+            "no-nss": {
+                "type": "boolean",
+                "description": "Do not show NSS calls."
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Debug mode."
+            },
+            "hexdump": {
+                "type": "boolean",
+                "description": "Show data as hexdump instead of trying to decode it as UTF-8."
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "stackcount-bpfcc",
+    "description": "Count events and their stack traces",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pattern": {
+                "type": "string",
+                "description": "Search expression for events"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "cpu": {
+                "type": "integer",
+                "description": "Trace this CPU only"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Summary interval, seconds"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace, seconds"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "regexp": {
+                "type": "boolean",
+                "description": "Use regular expressions. Default is \"*\" wildcards only."
+            },
+            "offset": {
+                "type": "boolean",
+                "description": "Show address offsets"
+            },
+            "perpid": {
+                "type": "boolean",
+                "description": "Display stacks separately for each process"
+            },
+            "kernel-stacks-only": {
+                "type": "boolean",
+                "description": "Kernel stack only"
+            },
+            "user-stacks-only": {
+                "type": "boolean",
+                "description": "User stack only"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Show raw addresses"
+            },
+            "delimited": {
+                "type": "boolean",
+                "description": "Insert delimiter between kernel/user stacks"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "Output folded format"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print BPF program before starting (for debugging purposes)"
+            }
+        },
+        "required": ["pattern"]
+    }
+},
+{
+    "name": "statsnoop-bpfcc",
+    "description": "Trace stat() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "failed": {
+                "type": "boolean",
+                "description": "Only show failed stats"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "syncsnoop-bpfcc",
+    "description": "A command to monitor synchronization events in the Linux kernel using BPF Compiler Collection (BCC)",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process ID to filter events for"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "The duration in seconds to monitor synchronization events"
+            },
+            "output": {
+                "type": "string",
+                "enum": ["json", "text"],
+                "description": "The output format for the results"
+            }
+        },
+        "required": ["pid", "duration", "output"]
+    }
+},
+{
+    "name": "syscount-bpfcc",
+    "description": "Summarize syscall counts and latencies",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Trace only this pid"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print summary at this interval (seconds)"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace, in seconds"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Print only the top syscalls by count or latency"
+            },
+            "failures": {
+                "type": "boolean",
+                "description": "Trace only failed syscalls (return < 0)"
+            },
+            "errno": {
+                "type": "string",
+                "description": "Trace only syscalls that return this error (numeric or EPERM, etc.)"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Collect syscall latency"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Display latency in milliseconds (default: microseconds)"
+            },
+            "process": {
+                "type": "boolean",
+                "description": "Count by process and not by syscall"
+            },
+            "list": {
+                "type": "boolean",
+                "description": "Print list of recognized syscalls and exit"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tclcalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "tclflow-bpfcc",
+    "description": "Trace method execution flow in Tcl",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "The language to trace"
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix"
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "tclobjnew-bpfcc",
+    "description": "Summarize object allocations in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to."
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "ruby", "tcl"],
+                "description": "Language to trace."
+            },
+            "top-count": {
+                "type": "integer",
+                "description": "Number of most frequently allocated types to print."
+            },
+            "top-size": {
+                "type": "integer",
+                "description": "Number of largest types by allocated bytes to print."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "tclstat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "tcpaccept-bpfcc",
+    "description": "Trace TCP accepts",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "time": {
+                "type": "boolean",
+                "description": "Include time column on output (HH:MM:SS)"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "port": {
+                "type": "string",
+                "description": "Comma-separated list of local ports to trace"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcpconnect-bpfcc",
+    "description": "Trace TCP connects",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "port": {
+                "type": "string",
+                "description": "Comma-separated list of destination ports to trace"
+            },
+            "print-uid": {
+                "type": "boolean",
+                "description": "Include UID on output"
+            },
+            "uid": {
+                "type": "integer",
+                "description": "Trace this UID only"
+            },
+            "count": {
+                "type": "boolean",
+                "description": "Count connects per src ip and dest ip/port"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            },
+            "dns": {
+                "type": "boolean",
+                "description": "Include likely DNS query associated with each connect"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcpconnlat-bpfcc",
+    "description": "Trace TCP connects and show connection latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration_ms": {
+                "type": "number",
+                "description": "Minimum duration to trace in milliseconds"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print the BPF program for debugging purposes"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcpdrop-bpfcc",
+    "description": "Trace TCP drops by the kernel",
+    "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+    }
+},
+{
+    "name": "tcplife-bpfcc",
+    "description": "Trace the lifespan of TCP sessions and summarize",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "time": {
+                "type": "boolean",
+                "description": "Include time column on output (HH:MM:SS)"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output (seconds)"
+            },
+            "wide": {
+                "type": "boolean",
+                "description": "Wide column output (fits IPv6 addresses)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "Comma separated values output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "localport": {
+                "type": "string",
+                "description": "Comma-separated list of local ports to trace"
+            },
+            "remoteport": {
+                "type": "string",
+                "description": "Comma-separated list of remote ports to trace"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcpretrans-bpfcc",
+    "description": "Trace TCP retransmits",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "lossprobe": {
+                "type": "boolean",
+                "description": "Include tail loss probe attempts"
+            },
+            "count": {
+                "type": "boolean",
+                "description": "Count occurred retransmits per flow"
+            }
+        }
+    }
+},
+{
+    "name": "tcpstates-bpfcc",
+    "description": "Trace TCP session state changes and durations",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "time": {
+                "type": "boolean",
+                "description": "Include time column on output (HH:MM:SS)"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output (seconds)"
+            },
+            "wide": {
+                "type": "boolean",
+                "description": "Wide column output (fits IPv6 addresses)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "Comma separated values output"
+            },
+            "localport": {
+                "type": "string",
+                "description": "Comma-separated list of local ports to trace"
+            },
+            "remoteport": {
+                "type": "string",
+                "description": "Comma-separated list of remote ports to trace"
+            },
+            "journal": {
+                "type": "boolean",
+                "description": "Log session state changes to the systemd journal"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcpsubnet-bpfcc",
+    "description": "Summarize TCP send and aggregate by subnet",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "subnets": {
+                "type": "string",
+                "description": "Comma separated list of subnets"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Output debug statements"
+            },
+            "json": {
+                "type": "boolean",
+                "description": "Format output in JSON"
+            },
+            "format": {
+                "type": "string",
+                "enum": ["b", "k", "m", "B", "K", "M"],
+                "description": "[bkmBKM] format to report: bits, Kbits, Mbits, bytes, KBytes, MBytes (default B)"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Output interval, in seconds (default 1)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcptop-bpfcc",
+    "description": "Summarize TCP send/recv throughput by host",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds (default 1)"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "nosummary": {
+                "type": "boolean",
+                "description": "Skip system summary line"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tcptracer-bpfcc",
+    "description": "Trace TCP connections",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "netns": {
+                "type": "string",
+                "description": "Trace this Network Namespace only"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Include Network Namespace in the output"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "tplist-bpfcc",
+    "description": "Display kernel tracepoints or USDT probes and their formats.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "filter": {
+                "type": "string",
+                "description": "A filter that specifies which probes/tracepoints to print"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "List USDT probes in the specified process"
+            },
+            "lib": {
+                "type": "string",
+                "description": "List USDT probes in the specified library or executable"
+            },
+            "v": {
+                "type": "boolean",
+                "description": "Increase verbosity level (print variables, arguments, etc.)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "trace-bpfcc",
+    "description": "Attach to functions and print trace messages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "probe": {
+                "type": "string",
+                "description": "probe specifier"
+            },
+            "buffer_pages": {
+                "type": "integer",
+                "description": "number of pages to use for perf_events ring buffer (default: 64)"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "id of the process to trace (optional)"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "id of the thread to trace (optional)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "print resulting BPF program code before executing"
+            },
+            "string_size": {
+                "type": "integer",
+                "description": "maximum size to read from strings"
+            },
+            "include_self": {
+                "type": "boolean",
+                "description": "do not filter trace's own pid from the trace"
+            },
+            "max_events": {
+                "type": "integer",
+                "description": "number of events to print before quitting"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "print timestamp column (offset from trace start)"
+            },
+            "unix_timestamp": {
+                "type": "boolean",
+                "description": "print UNIX timestamp instead of offset from trace start, requires -t"
+            },
+            "time": {
+                "type": "boolean",
+                "description": "print time column"
+            },
+            "print_cpu": {
+                "type": "boolean",
+                "description": "print CPU id"
+            },
+            "cgroup_path": {
+                "type": "string",
+                "description": "cgroup path"
+            },
+            "name": {
+                "type": "string",
+                "description": "only print process names containing this name"
+            },
+            "msg_filter": {
+                "type": "string",
+                "description": "only print the msg of event containing this string"
+            },
+            "bin_cmp": {
+                "type": "boolean",
+                "description": "allow to use STRCMP with binary values"
+            },
+            "sym_file_list": {
+                "type": "string",
+                "description": "coma separated list of symbol files to use for symbol resolution"
+            },
+            "kernel_stack": {
+                "type": "boolean",
+                "description": "output kernel stack trace"
+            },
+            "user_stack": {
+                "type": "boolean",
+                "description": "output user stack trace"
+            },
+            "address": {
+                "type": "boolean",
+                "description": "print virtual address in stacks"
+            },
+            "include": {
+                "type": "string",
+                "description": "additional header files to include in the BPF program as either full path, or relative to current working directory, or relative to default kernel header search path"
+            }
+        },
+        "required": ["probe"]
+    }
+},
+{
+    "name": "ttysnoop-bpfcc",
+    "description": "Snoop output from a pts or tty device, eg, a shell",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "device": {
+                "type": "string",
+                "description": "Path to a tty device (eg, /dev/tty0) or pts number"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            }
+        },
+        "required": ["device"]
+    }
+},
+{
+    "name": "ucalls",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "uflow",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "The language to trace."
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix."
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "ugc",
+    "description": "Summarize garbage collection events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "string",
+                "description": "process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "python", "ruby"],
+                "description": "language to trace"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "report times in milliseconds (default is microseconds)"
+            },
+            "minimum": {
+                "type": "integer",
+                "description": "display only GCs longer than this many milliseconds"
+            },
+            "filter": {
+                "type": "string",
+                "description": "display only GCs whose description contains this text"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "uobjnew",
+    "description": "Summarize object allocations in high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "ruby", "tcl"],
+                "description": "language to trace"
+            },
+            "top-count": {
+                "type": "integer",
+                "description": "number of most frequently allocated types to print"
+            },
+            "top-size": {
+                "type": "integer",
+                "description": "number of largest types by allocated bytes to print"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "ustat",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "uthreads",
+    "description": "Trace thread creation/destruction events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "none"],
+                "description": "The language to trace (none for pthreads only)."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "vfscount-bpfcc",
+    "description": "Count the number of virtual file system operations using BPF Compiler Collection",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "time": {
+                "type": "integer",
+                "description": "The time in seconds to collect data for. Default is 10 seconds."
+            }
+        }
+    }
+},
+{
+    "name": "vfsstat-bpfcc",
+    "description": "Get statistics about virtual file system operations using BPF Compiler Collection",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "integer",
+                "description": "The time interval in seconds between each measurement"
+            },
+            "count": {
+                "type": "integer",
+                "description": "The number of measurements to be taken"
+            }
+        }
+    }
+},
+{
+    "name": "wakeuptime-bpfcc",
+    "description": "Summarize sleep to wakeup time by waker kernel stack",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "number",
+                "description": "Duration of trace, in seconds"
+            },
+            "useronly": {
+                "type": "boolean",
+                "description": "User threads only (no kernel threads)"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Show raw addresses"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "Output folded format"
+            },
+            "stack-storage-size": {
+                "type": "number",
+                "description": "The number of unique stack traces that can be stored and displayed (default 1024)"
+            },
+            "min-block-time": {
+                "type": "number",
+                "description": "The amount of time in microseconds over which we store traces (default 1)"
+            },
+            "max-block-time": {
+                "type": "number",
+                "description": "The amount of time in microseconds under which we store traces (default U64_MAX)"
+            }
+        },
+        "required": ["duration"]
+    }
+},
+{
+    "name": "xfsdist-bpfcc",
+    "description": "Summarize XFS operation latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "notimestamp": {
+                "type": "boolean",
+                "description": "Don't include timestamp on interval output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Output in milliseconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "xfsslower-bpfcc",
+    "description": "Trace common XFS file operations slower than a threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "minimum I/O duration to trace, in ms (default 10)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "just print fields: comma-separated values"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "zfsdist-bpfcc",
+    "description": "Summarize ZFS operation latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "notimestamp": {
+                "type": "boolean",
+                "description": "Don't include timestamp on interval output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Output in milliseconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "zfsslower-bpfcc",
+    "description": "Trace common ZFS file operations slower than a threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "minimum I/O duration to trace, in ms (default 10)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "just print fields: comma-separated values"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "fileslower-bpfcc",
+    "description": "Trace slow synchronous file reads and writes",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "minimum I/O duration to trace, in ms (default 10)"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            },
+            "all_files": {
+                "type": "boolean",
+                "description": "include non-regular file types (sockets, FIFOs, etc)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "filetop-bpfcc",
+    "description": "File reads and writes by process",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "all-files": {
+                "type": "boolean",
+                "description": "Include non-regular file types (sockets, FIFOs, etc)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "maxrows": {
+                "type": "integer",
+                "description": "Maximum rows to print, default 20"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["all", "reads", "writes", "rbytes", "wbytes"],
+                "description": "Sort column, default all"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "funccount-bpfcc",
+    "description": "Count functions, tracepoints, and USDT probes",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pattern": {
+                "type": "string",
+                "description": "Search expression for events"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Summary interval, seconds"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace, seconds"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "regexp": {
+                "type": "boolean",
+                "description": "Use regular expressions. Default is \"*\" wildcards only."
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print BPF program before starting (for debugging purposes)"
+            },
+            "cpu": {
+                "type": "integer",
+                "description": "Trace this CPU only"
+            }
+        },
+        "required": ["pattern"]
+    }
+},
+{
+    "name": "funclatency-bpfcc",
+    "description": "Time functions and print latency as a histogram",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pattern": {
+                "type": "string",
+                "description": "Search expression for functions"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Summary interval, in seconds"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace, in seconds"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "microseconds": {
+                "type": "boolean",
+                "description": "Microsecond histogram"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Millisecond histogram"
+            },
+            "function": {
+                "type": "boolean",
+                "description": "Show a separate histogram per function"
+            },
+            "regexp": {
+                "type": "boolean",
+                "description": "Use regular expressions. Default is \"*\" wildcards only."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pattern"]
+    }
+},
+{
+    "name": "funcslower-bpfcc",
+    "description": "Trace slow kernel or user function calls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "function": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "function(s) to trace"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "trace this PID only"
+            },
+            "min-ms": {
+                "type": "integer",
+                "description": "minimum duration to trace (ms)"
+            },
+            "min-us": {
+                "type": "integer",
+                "description": "minimum duration to trace (us)"
+            },
+            "arguments": {
+                "type": "integer",
+                "description": "print this many entry arguments, as hex"
+            },
+            "time": {
+                "type": "boolean",
+                "description": "show HH:MM:SS timestamp"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "show timestamp in seconds at us resolution"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "print the BPF program for debugging purposes"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "output folded format, one line per stack (for flame graphs)"
+            },
+            "user-stack": {
+                "type": "boolean",
+                "description": "output user stack trace"
+            },
+            "kernel-stack": {
+                "type": "boolean",
+                "description": "output kernel stack trace"
+            }
+        },
+        "required": ["function"]
+    }
+},
+{
+    "name": "gethostlatency-bpfcc",
+    "description": "Show latency for getaddrinfo/gethostbyname[2] calls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "hardirqs-bpfcc",
+    "description": "Summarize hard irq event time as histograms",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "outputs": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "nanoseconds": {
+                "type": "boolean",
+                "description": "Output in nanoseconds"
+            },
+            "count": {
+                "type": "boolean",
+                "description": "Show event counts instead of timing"
+            },
+            "dist": {
+                "type": "boolean",
+                "description": "Show distributions as histograms"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "inject-bpfcc",
+    "description": "Fail specified kernel functionality when call chain and predicates are met",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "base_function": {
+                "type": "string",
+                "enum": ["kmalloc", "bio", "alloc_page"],
+                "description": "Indicate which base kernel function to fail"
+            },
+            "call_chain": {
+                "type": "string",
+                "description": "Specify call chain"
+            },
+            "include_header": {
+                "type": "string",
+                "description": "Additional header files to include in the BPF program"
+            },
+            "probability": {
+                "type": "number",
+                "description": "Probability that this call chain will fail"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Print BPF program"
+            },
+            "count": {
+                "type": "integer",
+                "description": "Number of fails before bypassing the override"
+            }
+        },
+        "required": ["base_function", "call_chain"]
+    }
+},
+{
+    "name": "javaflow-bpfcc",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "The language to trace."
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix."
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+
+{
+    "name": "javaobjnew-bpfcc",
+    "description": "Summarize object allocations in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "ruby", "tcl"],
+                "description": "Language to trace"
+            },
+            "top-count": {
+                "type": "integer",
+                "description": "Number of most frequently allocated types to print"
+            },
+            "top-size": {
+                "type": "integer",
+                "description": "Number of largest types by allocated bytes to print"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "javastat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "integer",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "integer",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "integer",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "javathreads-bpfcc",
+    "description": "Trace thread creation/destruction events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["c", "java", "none"],
+                "description": "The language to trace (none for pthreads only)."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "killsnoop-bpfcc",
+    "description": "Trace signals issued by the kill() syscall",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "failed": {
+                "type": "boolean",
+                "description": "Only show failed kill syscalls"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "signal": {
+                "type": "integer",
+                "description": "Trace this signal only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "klockstat-bpfcc",
+    "description": "Command to trace and display lock statistics",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace in seconds"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print summary at this interval (seconds)"
+            },
+            "locks": {
+                "type": "integer",
+                "description": "Print given number of locks"
+            },
+            "stacks": {
+                "type": "integer",
+                "description": "Print given number of stack entries"
+            },
+            "caller": {
+                "type": "string",
+                "description": "Print locks taken by given caller"
+            },
+            "sort": {
+                "type": "string",
+                "description": "Sort data on <aq_field,hd_field>, fields: acq_[max|total|count] hld_[max|total|count]"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace locks for this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Trace locks for this TID only"
+            },
+            "stack_storage_size": {
+                "type": "integer",
+                "description": "The number of unique stack traces that can be stored and displayed (default 16384)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "llcstat-bpfcc",
+    "description": "Summarize cache references and misses by PID",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "integer",
+                "description": "Duration, in seconds, to run"
+            },
+            "sample_period": {
+                "type": "integer",
+                "description": "Sample one in this many number of cache reference / miss events"
+            }
+        },
+        "required": ["duration"]
+    }
+},
+{
+    "name": "mdflush-bpfcc",
+    "description": "Flush dirty metadata buffers using BPF",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "force": {
+                "type": "boolean",
+                "description": "Force the flush operation"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Interval between flush operations in seconds"
+            }
+        },
+        "required": ["force", "interval"]
+    }
+},
+{
+    "name": "memleak-bpfcc",
+    "description": "Trace outstanding memory allocations that weren't freed.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Interval in seconds to print outstanding allocations"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of times to print the report before exiting"
+            },
+            "pid": {
+                "type": "number",
+                "description": "The PID to trace; if not specified, trace kernel allocs"
+            },
+            "trace": {
+                "type": "boolean",
+                "description": "Print trace messages for each alloc/free call"
+            },
+            "show-allocs": {
+                "type": "boolean",
+                "description": "Show allocation addresses and sizes as well as call stacks"
+            },
+            "older": {
+                "type": "number",
+                "description": "Prune allocations younger than this age in milliseconds"
+            },
+            "command": {
+                "type": "string",
+                "description": "Execute and trace the specified command"
+            },
+            "combined-only": {
+                "type": "boolean",
+                "description": "Show combined allocation statistics only"
+            },
+            "wa-missing-free": {
+                "type": "boolean",
+                "description": "Workaround to alleviate misjudgments when free is missing"
+            },
+            "sample-rate": {
+                "type": "number",
+                "description": "Sample every N-th allocation to decrease the overhead"
+            },
+            "top": {
+                "type": "number",
+                "description": "Display only this many top allocating stacks (by size)"
+            },
+            "min-size": {
+                "type": "number",
+                "description": "Capture only allocations larger than this size"
+            },
+            "max-size": {
+                "type": "number",
+                "description": "Capture only allocations smaller than this size"
+            },
+            "obj": {
+                "type": "string",
+                "description": "Attach to allocator functions in the specified object"
+            },
+            "percpu": {
+                "type": "boolean",
+                "description": "Trace percpu allocations"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "mountsnoop-bpfcc",
+    "description": "Trace mount() and umount() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            }
+        }
+    }
+},
+{
+    "name": "mysqld_qslower-bpfcc",
+    "description": "Command to monitor slow queries in MySQL",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "PID": {
+                "type": "integer",
+                "description": "The process ID of the MySQL server"
+            },
+            "min_ms": {
+                "type": "integer",
+                "description": "The minimum execution time of queries to be considered slow"
+            }
+        },
+        "required": ["PID"]
+    }
+},
+{
+    "name": "nfsdist-bpfcc",
+    "description": "Summarize NFS operation latency",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "notimestamp": {
+                "type": "boolean",
+                "description": "Don't include timestamp on interval output"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Output in milliseconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "nfsslower-bpfcc",
+    "description": "Trace READ, WRITE, OPEN and GETATTR NFS calls slower than a threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "min_ms": {
+                "type": "integer",
+                "description": "Minimum IO duration to trace in ms (default=10ms)"
+            },
+            "csv": {
+                "type": "boolean",
+                "description": "Just print fields: comma-separated values"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this pid only"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "nodegc-bpfcc",
+    "description": "Summarize garbage collection events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "python", "ruby"],
+                "description": "Language to trace"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            },
+            "minimum": {
+                "type": "integer",
+                "description": "Display only GCs longer than this many milliseconds"
+            },
+            "filter": {
+                "type": "string",
+                "description": "Display only GCs whose description contains this text"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "nodestat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "offcputime-bpfcc",
+    "description": "Summarize off-CPU time by stack trace",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "number",
+                "description": "Duration of trace, in seconds"
+            },
+            "pid": {
+                "type": "number",
+                "description": "Trace this PID only"
+            },
+            "tid": {
+                "type": "number",
+                "description": "Trace this TID only"
+            },
+            "user_threads_only": {
+                "type": "boolean",
+                "description": "User threads only (no kernel threads)"
+            },
+            "kernel_threads_only": {
+                "type": "boolean",
+                "description": "Kernel threads only (no user threads)"
+            },
+            "user_stacks_only": {
+                "type": "boolean",
+                "description": "Show stacks from user space only (no kernel space stacks)"
+            },
+            "kernel_stacks_only": {
+                "type": "boolean",
+                "description": "Show stacks from kernel space only (no user space stacks)"
+            },
+            "delimited": {
+                "type": "boolean",
+                "description": "Insert delimiter between kernel/user stacks"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "Output folded format"
+            },
+            "stack_storage_size": {
+                "type": "number",
+                "description": "The number of unique stack traces that can be stored and displayed (default 1024)"
+            },
+            "min_block_time": {
+                "type": "number",
+                "description": "The amount of time in microseconds over which we store traces (default 1)"
+            },
+            "max_block_time": {
+                "type": "number",
+                "description": "The amount of time in microseconds under which we store traces (default U64_MAX)"
+            },
+            "state": {
+                "type": "number",
+                "description": "Filter on this thread state bitmask (eg, 2 == TASK_UNINTERRUPTIBLE) see include/linux/sched.h"
+            }
+        },
+        "required": ["duration"]
+    }
+},
+{
+    "name": "offwaketime-bpfcc",
+    "description": "Summarize blocked time by kernel stack trace + waker stack",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "number",
+                "description": "Duration of trace, in seconds"
+            },
+            "pid": {
+                "type": "string",
+                "description": "Trace these PIDS only. Can be a comma separated list of PIDS."
+            },
+            "tid": {
+                "type": "string",
+                "description": "Trace these TIDS only. Can be a comma separated list of TIDS."
+            },
+            "user_threads_only": {
+                "type": "boolean",
+                "description": "User threads only (no kernel threads)"
+            },
+            "kernel_threads_only": {
+                "type": "boolean",
+                "description": "Kernel threads only (no user threads)"
+            },
+            "user_stacks_only": {
+                "type": "boolean",
+                "description": "Show stacks from user space only (no kernel space stacks)"
+            },
+            "kernel_stacks_only": {
+                "type": "boolean",
+                "description": "Show stacks from kernel space only (no user space stacks)"
+            },
+            "delimited": {
+                "type": "boolean",
+                "description": "Insert delimiter between kernel/user stacks"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "Output folded format"
+            },
+            "stack_storage_size": {
+                "type": "integer",
+                "description": "The number of unique stack traces that can be stored and displayed (default 1024)"
+            },
+            "min_block_time": {
+                "type": "integer",
+                "description": "The amount of time in microseconds over which we store traces (default 1)"
+            },
+            "max_block_time": {
+                "type": "integer",
+                "description": "The amount of time in microseconds under which we store traces (default U64_MAX)"
+            },
+            "state": {
+                "type": "integer",
+                "description": "Filter on this thread state bitmask (eg, 2 == TASK_UNINTERRUPTIBLE) see include/linux/sched.h"
+            }
+        },
+        "required": ["duration"]
+    }
+},
+{
+    "name": "oomkill-bpfcc",
+    "description": "Kill a process when it exceeds the out-of-memory (OOM) score threshold",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process ID to monitor"
+            },
+            "threshold": {
+                "type": "integer",
+                "description": "The OOM score threshold"
+            }
+        },
+        "required": ["pid", "threshold"]
+    }
+},
+{
+    "name": "opensnoop-bpfcc",
+    "description": "Trace open() syscalls",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "help": {
+                "type": "boolean",
+                "description": "Show help message and exit"
+            },
+            "timestamp": {
+                "type": "boolean",
+                "description": "Include timestamp on output"
+            },
+            "print-uid": {
+                "type": "boolean",
+                "description": "Print UID column"
+            },
+            "failed": {
+                "type": "boolean",
+                "description": "Only show failed opens"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Trace this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Trace this TID only"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            },
+            "uid": {
+                "type": "integer",
+                "description": "Trace this UID only"
+            },
+            "duration": {
+                "type": "integer",
+                "description": "Total duration of trace in seconds"
+            },
+            "name": {
+                "type": "string",
+                "description": "Only print process names containing this name"
+            },
+            "extended_fields": {
+                "type": "boolean",
+                "description": "Show extended fields"
+            },
+            "flag_filter": {
+                "type": "string",
+                "description": "Filter on flags argument (e.g., O_WRONLY)"
+            }
+        },
+        "required": []
+    }
+},
+{
+    "name": "perlcalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "perlflow-bpfcc",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace"
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix"
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "perlstat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "phpcalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "phpflow-bpfcc",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "The language to trace."
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix."
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "phpstat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "pidpersec-bpfcc",
+    "description": "Get the number of processes created per second",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process ID"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "The time interval in seconds"
+            }
+        },
+        "required": ["pid", "interval"]
+    }
+},
+{
+    "name": "profile-bpfcc",
+    "description": "Profile CPU stack traces at a timed interval",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "string",
+                "description": "Duration of trace, in seconds"
+            },
+            "pid": {
+                "type": "integer",
+                "description": "Profile process with this PID only"
+            },
+            "tid": {
+                "type": "integer",
+                "description": "Profile thread with this TID only"
+            },
+            "user-stacks-only": {
+                "type": "boolean",
+                "description": "Show stacks from user space only (no kernel space stacks)"
+            },
+            "kernel-stacks-only": {
+                "type": "boolean",
+                "description": "Show stacks from kernel space only (no user space stacks)"
+            },
+            "frequency": {
+                "type": "integer",
+                "description": "Sample frequency, Hertz"
+            },
+            "count": {
+                "type": "integer",
+                "description": "Sample period, number of events"
+            },
+            "delimited": {
+                "type": "boolean",
+                "description": "Insert delimiter between kernel/user stacks"
+            },
+            "annotations": {
+                "type": "boolean",
+                "description": "Add _[k] annotations to kernel frames"
+            },
+            "include-idle": {
+                "type": "boolean",
+                "description": "Include CPU idle stacks"
+            },
+            "folded": {
+                "type": "boolean",
+                "description": "Output folded format, one line per stack (for flame graphs)"
+            },
+            "stack-storage-size": {
+                "type": "integer",
+                "description": "The number of unique stack traces that can be stored and displayed (default 16384)"
+            },
+            "cpu": {
+                "type": "integer",
+                "description": "CPU number to run profile on"
+            },
+            "cgroupmap": {
+                "type": "string",
+                "description": "Trace cgroups in this BPF map only"
+            },
+            "mntnsmap": {
+                "type": "string",
+                "description": "Trace mount namespaces in this BPF map only"
+            }
+        },
+        "required": ["duration"]
+    }
+},
+{
+    "name": "pythonflow-bpfcc",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "The process id to attach to."
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "The language to trace."
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix."
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)."
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "pythongc-bpfcc",
+    "description": "Summarize garbage collection events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "python", "ruby"],
+                "description": "Language to trace"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            },
+            "minimum": {
+                "type": "integer",
+                "description": "Display only GCs longer than this many milliseconds"
+            },
+            "filter": {
+                "type": "string",
+                "description": "Display only GCs whose description contains this text"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "pythonstat-bpfcc",
+    "description": "Activity stats from high-level languages",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "description": "Output interval, in seconds"
+            },
+            "count": {
+                "type": "number",
+                "description": "Number of outputs"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace (default: all languages)"
+            },
+            "noclear": {
+                "type": "boolean",
+                "description": "Don't clear the screen"
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["cload", "excp", "gc", "method", "objnew", "thread"],
+                "description": "Sort by this field (descending order)"
+            },
+            "maxrows": {
+                "type": "number",
+                "description": "Maximum rows to print, default 20"
+            },
+            "debug": {
+                "type": "boolean",
+                "description": "Print the resulting BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["interval", "count"]
+    }
+},
+{
+    "name": "reset-trace-bpfcc",
+    "description": "Reset the trace of BPFCC command",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "trace_id": {
+                "type": "integer",
+                "description": "The ID of the trace to reset"
+            }
+        },
+        "required": ["trace_id"]
+    }
+},
+{
+    "name": "rubycalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "rubyflow-bpfcc",
+    "description": "Trace method execution flow in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl"],
+                "description": "Language to trace"
+            },
+            "method": {
+                "type": "string",
+                "description": "Trace only calls to methods starting with this prefix"
+            },
+            "class": {
+                "type": "string",
+                "description": "Trace only calls to classes starting with this prefix"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "rubygc-bpfcc",
+    "description": "Summarize garbage collection events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "python", "ruby"],
+                "description": "Language to trace"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            },
+            "minimum": {
+                "type": "integer",
+                "description": "Display only GCs longer than this many milliseconds"
+            },
+            "filter": {
+                "type": "string",
+                "description": "Display only GCs whose description contains this text"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "javacalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "javagc-bpfcc",
+    "description": "Summarize garbage collection events in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "node", "python", "ruby"],
+                "description": "Language to trace"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            },
+            "minimum": {
+                "type": "integer",
+                "description": "Display only GCs longer than this many milliseconds"
+            },
+            "filter": {
+                "type": "string",
+                "description": "Display only GCs whose description contains this text"
+            }
+        },
+        "required": ["pid"]
+    }
+},
+{
+    "name": "pythoncalls-bpfcc",
+    "description": "Summarize method calls in high-level languages.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "pid": {
+                "type": "integer",
+                "description": "Process id to attach to"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Print every specified number of seconds"
+            },
+            "language": {
+                "type": "string",
+                "enum": ["java", "perl", "php", "python", "ruby", "tcl", "none"],
+                "description": "Language to trace (if none, trace syscalls only)"
+            },
+            "top": {
+                "type": "integer",
+                "description": "Number of most frequent/slow calls to print"
+            },
+            "latency": {
+                "type": "boolean",
+                "description": "Record method latency from enter to exit (except recursive calls)"
+            },
+            "syscalls": {
+                "type": "boolean",
+                "description": "Record syscall latency (adds overhead)"
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Verbose mode: print the BPF program (for debugging purposes)"
+            },
+            "milliseconds": {
+                "type": "boolean",
+                "description": "Report times in milliseconds (default is microseconds)"
+            }
+        },
+        "required": ["pid"]
+    }
+}
+]
