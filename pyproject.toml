@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gpttrace"
+description = "Generate eBPF programs and tracing with ChatGPT and natural language."
+keywords = ["shell", "gpt", "openai", "cli", "productivity"]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.6"
+authors = [{ name = "eunomia-bpf", email = "2629757717@qq.com" }]
+dynamic = ["version"]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "langchain>=0.0.227",
+    "llama_index>=0.7.3",
+    "marko>=2.0.0",
+    "openai>=0.27.8",
+    "prompt_toolkit>=3.0.38",
+    "Pygments>=2.15.1",
+    "pygments_markdown_lexer>=0.1.0.dev39",
+    "click>=8.1.4"
+]
+
+# Program entry function of gpttrace.
+[project.scripts]
+gpttrace = "gpttrace:main"
+
+[project.urls]
+homepage = "https://github.com/eunomia-bpf/GPTtrace"
+repository = "https://github.com/eunomia-bpf/GPTtrace"
+documentation = "https://github.com/eunomia-bpf/GPTtrace/blob/main/README.md"
+
+[tool.hatch.version]
+path = "gpttrace/__init__.py"
+
+# Generate the .whl file, which is installed when the user use `pip install package`
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "gpttrace",
+    "data_save",
+]
+# This will be uploaded to pypi.
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "gpttrace",
+    "doc",
+    "data_save",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.isort]
+profile = "black"
+skip =  "__init__.py"
+
+[tool.mypy]
+strict = true
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors.
+    "W",  # pycodestyle warnings.
+    "F",  # pyflakes.
+    "C",  # flake8-comprehensions.
+    "B",  # flake8-bugbear.
+]
+ignore = [
+    "E501",  # line too long, handled by black.
+    "C901",  # too complex.
+    "B008",  # do not perform function calls in argument defaults.
+]
+
+[tool.codespell]
+skip = '.git,venv'
+# ignore-words-list = ''
