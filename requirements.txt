@@ -4,5 +4,5 @@ marko==2.0.0
 openai==0.27.8
 prompt_toolkit==3.0.38
 Pygments==2.15.1
-Pygments==2.14.0
 pygments_markdown_lexer==0.1.0.dev39
+click==8.1.4

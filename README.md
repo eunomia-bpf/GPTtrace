@@ -52,21 +52,23 @@ Attaching to kernel allocators, Ctrl+C to quit.
 ## Usage and Setup 🛠
 
 ```console
-$ ./GPTtrace.py
-usage: GPTtrace [-h] [-i] [-e TEXT] [-g TEXT] [-v] [-k KEY] [-t]
+$gpttrace
+usage: GPTtrace [-h] [-i] [-c CMD_NAME QUERY] [-e EXEC_QUERY] [-g GEN_QUERY] [-v] [-k OPENAI_API_KEY] [-t]
 
 Use ChatGPT to write eBPF programs (bpftrace, etc.)
 
 options:
   -h, --help            show this help message and exit
   -i, --info            Let ChatGPT explain what's eBPF
-  -e TEXT, --execute TEXT
+  -c CMD_NAME QUERY, --cmd CMD_NAME QUERY
+                        Use the bcc tool to complete the trace task
+  -e EXEC_QUERY, --execute EXEC_QUERY
                         Generate commands using your input with ChatGPT, and run it
-  -g TEXT, --generate TEXT
+  -g GEN_QUERY, --generate GEN_QUERY
                         Generate eBPF programs using your input with ChatGPT
   -v, --verbose         Show more details
-  -k KEY, --key KEY     Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through
-                        `OPENAI_API_KEY`
+  -k OPENAI_API_KEY, --key OPENAI_API_KEY
+                        Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `OPENAI_API_KEY`
   -t, --train           Train ChatGPT with conversions we provided
 ```
 
@@ -126,7 +128,7 @@ And also, new LLM models will certainly lead to more realistic and accurate lang
 ## Installation 🔧
 
 ```sh
-./install.sh
+pip install gpttrace
 ```
 
 ## Examples
