@@ -5,7 +5,7 @@
 [![DeepSource](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf.svg/?label=active+issues&show_trend=true&token=rcSI3J1-gpwLIgZWtKZC-N6C)](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf/?ref=repository-badge)
 [![CodeFactor](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf/badge)](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf)
 
-Generate eBPF programs and tracing with ChatGPT and natural language
+An experiment for generating eBPF programs and tracing with ChatGPT and natural language
 
 ## Key Features 💡
 
@@ -15,10 +15,16 @@ example: tracing with Count page faults by process
 
 <img src="doc/result.png" alt="Image" width="600">
 
+## Installation 🔧
+
+```sh
+pip install gpttrace
+```
+
 ### Generate eBPF programs with natural language
 
 ```shell
-$./GPTtrace.py -g "Write a program that installs a tracepoint handler which is triggered by write syscall"
+$ python3 gpttrace -g "Write a program that installs a tracepoint handler which is triggered by write syscall"
 ```
 
 <img src="doc/generate.png" alt="Image" width="600">
@@ -31,7 +37,7 @@ For detail documents and tutorials about how we train ChatGPT to write eBPF prog
 ### Specify the command line tool to complete the tracking task
 
 ```console
-$./GPTtrace.py -c memleak-bpfcc "Trace allocations and display each individual allocator function call"
+$ python3 gpttrace -c memleak-bpfcc "Trace allocations and display each individual allocator function call"
  Run:  sudo memleak-bpfcc --trace 
 Attaching to kernel allocators, Ctrl+C to quit.
 (b'Relay(35)', 402, 6, b'd...1', 20299.252425, b'alloc exited, size = 4096, result = ffff8881009cc000')
@@ -52,7 +58,7 @@ Attaching to kernel allocators, Ctrl+C to quit.
 ## Usage and Setup 🛠
 
 ```console
-$gpttrace
+$ gpttrace
 usage: GPTtrace [-h] [-i] [-c CMD_NAME QUERY] [-e EXEC_QUERY] [-g GEN_QUERY] [-v] [-k OPENAI_API_KEY] [-t]
 
 Use ChatGPT to write eBPF programs (bpftrace, etc.)
@@ -80,24 +86,12 @@ options:
 
 - Remember your key, and then set it to the environment variable `OPENAI_API_KEY` or use the `-k` option.
 
-### Use prompts to teach ChatGPT to write eBPF programs
-
-```console
-$ $ ./GPTtrace.py --train
-/home/todo/intership/GPTtrace/vector_index.josn not found. Training...
-INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total LLM token usage: 0 tokens
-INFO:llama_index.token_counter.token_counter:> [build_index_from_documents] Total embedding token usage: 4185 tokens
-Training completed, /home/todo/intership/GPTtrace/vector_index.josn has been saved.
-```
-
-When you specify the "--train" option, GPTtrace will search for the most relevant information from the prepared documents, and send them as additional information to ChatGPT, enabling ChatGPT to write eBPF programs in bpftrace, libbpf, and BCC styles. You can also do that manually by sending the prompts to ChatGPT in the Website.
-
 ### start your tracing! 🚀
 
 For example:
 
 ```sh
-./GPTtrace.py -e "Count page faults by process"
+python3 gpttrace -e "Count page faults by process"
 ```
 
 If the eBPF program cannot be loaded into the kernel, The error message will be used to correct ChatGPT, and the result will be printed to the console.
