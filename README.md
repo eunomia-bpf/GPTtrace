@@ -15,16 +15,10 @@ example: tracing with Count page faults by process
 
 <img src="doc/result.png" alt="Image" width="600">
 
-## Installation 🔧
-
-```sh
-pip install gpttrace
-```
-
 ### Generate eBPF programs with natural language
 
 ```shell
-$ python3 gpttrace -g "Write a program that installs a tracepoint handler which is triggered by write syscall"
+$ python3 gpttrace "Write a program that installs a tracepoint handler which is triggered by write syscall"
 ```
 
 <img src="doc/generate.png" alt="Image" width="600">
@@ -32,9 +26,9 @@ $ python3 gpttrace -g "Write a program that installs a tracepoint handler which 
 
 The generated eBPF program will be stored in the generate.bpf.c file, and you can compile this program using the clang or ecc tools.
 
-For detail documents and tutorials about how we train ChatGPT to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) （a libbpf tool tutorial to teach ChatGPT to write eBPF programs).
+For detail documents and tutorials about how to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) (a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
 
-### Specify the command line tool to complete the tracking task
+### Choose the right command line tool to complete the tracking task
 
 ```console
 $ python3 gpttrace -c memleak-bpfcc "Trace allocations and display each individual allocator function call"
@@ -51,6 +45,12 @@ Attaching to kernel allocators, Ctrl+C to quit.
 (b'node', 410, 18, b'd...1', 20299.252455, b'alloc entered, size = 256')
 (b'node', 410, 18, b'd...1', 20299.252457, b'alloc exited, size = 256, result = ffff8882e9b66400')
 (b'node', 410, 18, b'd...1', 20299.252458, b'alloc entered, size = 2048')
+```
+
+## Installation 🔧
+
+```sh
+pip install gpttrace
 ```
 
 **Note that the `GPTtrace` tool now is only a demo project to show how it works, the result may not be accuracy, and it is not recommended to use it in production. We are working to make it more stable and complete!**

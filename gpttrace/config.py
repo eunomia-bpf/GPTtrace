@@ -27,7 +27,6 @@ DEFAULT_CONFIG = {
     "DOC_PATH": os.getenv("DOC_PATH", DOC_PATH)
 }
 
-
 class Config(dict):
     """
     A dictionary for handling configuration items in this project.
