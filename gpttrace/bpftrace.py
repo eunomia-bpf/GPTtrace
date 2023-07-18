@@ -4,6 +4,7 @@ import openai
 import json
 import unittest
 import threading
+from typing import List, TypedDict
 
 functions = [
     {
@@ -95,8 +96,13 @@ functions = [
     }
 ]
 
+class CommandResult(TypedDict):
+    command: str
+    stdout: str
+    stderr: str
+    returncode: int
 
-def run_command_with_timeout(command: str, timeout: int) -> dict:
+def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
     """
     This function runs a command with a timeout.
     """
@@ -177,7 +183,7 @@ def construct_command(operation: dict) -> list:
     return cmd
 
 
-def run_bpftrace(prompt: str, verbose: bool = False) -> object:
+def run_bpftrace(prompt: str, verbose: bool = False) -> CommandResult:
     """
     This function sends a list of messages and functions to the GPT model
     and runs the function call returned by the model.
