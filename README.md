@@ -5,7 +5,7 @@
 [![DeepSource](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf.svg/?label=active+issues&show_trend=true&token=rcSI3J1-gpwLIgZWtKZC-N6C)](https://deepsource.io/gh/eunomia-bpf/eunomia-bpf/?ref=repository-badge)
 [![CodeFactor](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf/badge)](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf)
 
-An experiment for generating eBPF programs and tracing with ChatGPT and natural language
+An experiment for generating eBPF programs and tracing with GPT and natural language
 
 ## Key Features 💡
 
@@ -47,35 +47,53 @@ Attaching to kernel allocators, Ctrl+C to quit.
 (b'node', 410, 18, b'd...1', 20299.252458, b'alloc entered, size = 2048')
 ```
 
+## How it works
+
+![GPTtrace/doc/how-it-works.png](doc/how-it-works.png)
+
+1. **User Input**: The user provides their operating system information and kernel version. This information is crucial as it helps to tailor the eBPF program to the specific environment of the user.
+
+2. **Prompt Construction**: The user's input, along with the OS info and kernel version, is used to construct a prompt. This prompt is designed to guide the generation of the eBPF program.
+
+3. **Vector Database Query**: The constructed prompt is used to query the Vector Database for eBPF program examples. These examples serve as a basis for generating the eBPF program that will be inserted into the kernel.
+
+4. **Hook Point Identification**: The GPT API is used to identify potential hook points in the eBPF program. These hook points are locations in the code where the eBPF program can be inserted to monitor or modify the behavior of the kernel.
+
+5. **eBPF Program Generation**: The identified hook points, along with the examples from the Vector Database, are used to generate the eBPF program. This program is designed to be inserted into the kernel to perform the desired tracing tasks.
+
+6. **Kernel Insertion**: The generated eBPF program is inserted into the kernel. If there are any errors during this process, the tool will retry the steps from querying the Vector Database to kernel insertion a few times.
+
+7. **Result Explanation**: Once the eBPF program is successfully inserted into the kernel, the AI will explain the result to the user. This includes an explanation of what the eBPF program is doing and how it is interacting with the kernel.
+
+This process ensures that the eBPF program is tailored to the user's specific environment and needs, and that the user understands how the program works and what it is doing.
+
 ## Installation 🔧
 
 ```sh
 pip install gpttrace
 ```
 
-**Note that the `GPTtrace` tool now is only a demo project to show how it works, the result may not be accuracy, and it is not recommended to use it in production. We are working to make it more stable and complete!**
-
 ## Usage and Setup 🛠
 
 ```console
-$ gpttrace
-usage: GPTtrace [-h] [-i] [-c CMD_NAME QUERY] [-e EXEC_QUERY] [-g GEN_QUERY] [-v] [-k OPENAI_API_KEY] [-t]
+$ python3 -m gpttrace -h
+usage: GPTtrace [-h] [-c CMD_NAME QUERY] [-v] [-k OPENAI_API_KEY]
+                input_string
 
 Use ChatGPT to write eBPF programs (bpftrace, etc.)
 
+positional arguments:
+  input_string          Your question or request for a bpf program
+
 options:
   -h, --help            show this help message and exit
-  -i, --info            Let ChatGPT explain what's eBPF
   -c CMD_NAME QUERY, --cmd CMD_NAME QUERY
                         Use the bcc tool to complete the trace task
-  -e EXEC_QUERY, --execute EXEC_QUERY
-                        Generate commands using your input with ChatGPT, and run it
-  -g GEN_QUERY, --generate GEN_QUERY
-                        Generate eBPF programs using your input with ChatGPT
   -v, --verbose         Show more details
   -k OPENAI_API_KEY, --key OPENAI_API_KEY
-                        Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `OPENAI_API_KEY`
-  -t, --train           Train ChatGPT with conversions we provided
+                        Openai api key, see
+                        `https://platform.openai.com/docs/quickstart/add-
+                        your-api-key` or passed through `OPENAI_API_KEY`
 ```
 
 ### First: login to ChatGPT
@@ -91,39 +109,10 @@ options:
 For example:
 
 ```sh
-python3 gpttrace -e "Count page faults by process"
+python3 gpttrace "Count page faults by process"
 ```
 
 If the eBPF program cannot be loaded into the kernel, The error message will be used to correct ChatGPT, and the result will be printed to the console.
-
-## How it works
-
-Step 1: Prepare the document and convert it to plain text format. Cut the document into several small chunks. 
-
-Step 2: Call the text-to-vector interface to convert each chunk into a vector and store it in the vector database. 
-
-Step 3: When a user  inputs their request in natural language, convert the request into a vector and search the vector database to get the highest relevance one or several chunks. 
-
-Step 4: Merge the request and chunk, rewrite it into a new request, and GPTtrace calls the ChatGPT API to generate an eBPF program. The generated program is then executed via shell or written to a file for compilation and execution.
-
-Step5: If there are errors in compilation or loading, the error is sent back to ChatGPT to generate a new eBPF program or command.
-
-## Room for improvement
-
-There is still plenty of room for improvement, including:
-
-1. Once the ChatGPT can search online, it should be much better to let the tool get sample programs from the bcc/bpftrace repository and learn them, or let the tool look at Stack Overflow or something to see how to write eBPF programs, similar to the method used in new Bing search.
-2. Providing more high-quality documentation and tutorials to improve the accuracy of the output and the quality of the code examples.
-3. Making multiple calls to other tools to execute commands and return results. For example, GPTtrace could output a command, have bpftrace query the current kernel version and supported tracepoints, and return the output as part of the conversation.
-4. Incorporating user feedback to improve the quality of the generated code and refine the natural language processing capabilities of the tool.
-
-And also, new LLM models will certainly lead to more realistic and accurate language generation.
-
-## Installation 🔧
-
-```sh
-pip install gpttrace
-```
 
 ## Examples
 

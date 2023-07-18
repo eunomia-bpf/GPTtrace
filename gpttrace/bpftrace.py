@@ -78,8 +78,10 @@ functions = [
     }
 ]
 
-
-def run_command_with_timeout(command, timeout: str):
+def run_command_with_timeout(command: str, timeout: int) -> dict:
+    """
+    This function runs a command with a timeout.
+    """
     print("The bpf program to run is: " + ' '.join(command))
     print("timeout: " + str(timeout))
     user_input = input("Enter 'y' to proceed: ")
@@ -113,7 +115,10 @@ def run_command_with_timeout(command, timeout: str):
                 "returncode": process.returncode
             }
 
-def construct_command(operation):
+def construct_command(operation: dict) -> list:
+    """
+    This function constructs a command from a dictionary of options.
+    """
     cmd = []
     if "bufferingMode" in operation:
         cmd += ["-B", operation["bufferingMode"]]
@@ -176,7 +181,7 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> object:
         timeout = 20  # default is running for 20 seconds
         if args.get("timeout"):
             timeout = args["timeout"]
-        res = run_command_with_timeout(full_command, timeout)
+        res = run_command_with_timeout(full_command, int(timeout))
         if args.get("continue") and res["stderr"] == "":
             # continue conversation
             res["stderr"] = "The conversation shall not complete."
@@ -223,7 +228,13 @@ class TestRunBpftrace(unittest.TestCase):
             "noWarnings": true
         }
         """
-
         operation = json.loads(operation_json)
         command = construct_command(operation)
         print(command)
+    
+    def test_run_command_with_timeout_short_live(self):
+        command = ["ls", "-l"]
+        timeout = 5
+        result = run_command_with_timeout(command, timeout)
+        self.assertEqual(result["command"], "ls -l")
+        self.assertEqual(result["returncode"], 0)
