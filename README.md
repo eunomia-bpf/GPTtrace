@@ -20,13 +20,13 @@ example: tracing with Count page faults by process
 
 ### Generate eBPF programs with natural language
 
-example: Write a bpf program that installs a tracepoint handler which is triggered by write syscall, save the bpf program to a file and exit without actual running it
+example: Write an eBPF program Print entered bash commands from all running shells, save the bpf program to a file and exit without actual run it.
 
 <img src="doc/generate.png" alt="Image" width="600">
 
-We use examples from [bpftrace tools](tools) to create 
+We use examples from [bpftrace tools](tools) to create vector store and search.
 
-For detail documents and tutorials about how to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) (a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
+For more detail documents and tutorials about how to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) (a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
 
 ### Choose the right bcc command line tool to complete the tracking task
 
@@ -138,4 +138,3 @@ MIT
 - detail documents and tutorials about how we train ChatGPT to write eBPF programs: https://github.com/eunomia-bpf/bpf-developer-tutorial （基于 CO-RE (一次编写，到处运行） libbpf 的 eBPF 开发者教程：通过 20 个小工具一步步学习 eBPF（尝试教会 ChatGPT 编写 eBPF 程序）
 - bpftrace: https://github.com/iovisor/bpftrace
 - ChatGPT: https://chat.openai.com/
-- Python API: https://github.com/mmabrouk/chatgpt-wrapper

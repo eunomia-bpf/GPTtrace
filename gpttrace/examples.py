@@ -1,4 +1,13 @@
 import os
+# from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.vectorstores import DocArrayInMemorySearch
+# from langchain.document_loaders import DirectoryLoader
+
+# loader = DirectoryLoader('gpttrace/tools/', glob="**/*.bt")
+# docs = loader.load()
+# embeddings = OpenAIEmbeddings()
+
+# db = DocArrayInMemorySearch.from_documents(docs, embeddings)
 
 simple_examples = """
 # list probes containing "sleep"
