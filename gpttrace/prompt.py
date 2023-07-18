@@ -21,6 +21,19 @@ def construct_prompt_on_error(previous_prompt: str, text: str, output: str) -> s
     {output}
     """
 
+def construct_prompt_for_explain(text: str, output: str) -> str:
+    # fix the token limi
+    if len(output) > 2048:
+        output = output[:4096]
+    return f"""
+    please explain the output of the previous bpftrace result:
+    
+    {output}
+    
+    The original user request is: 
+    
+    {text}
+    """
 
 def construct_running_prompt(text: str) -> str:
     """
@@ -34,6 +47,7 @@ def construct_running_prompt(text: str) -> str:
     As a supportive assistant to a Linux system administrator,
     your role involves leveraging bpftrace to generate eBPF code that aids
     in problem-solving, as well as responding to queries.
+    Note that you may not always need to call the bpftrace tool function.
     Here are some pertinent examples that align with the user's requests:
 
     {examples}

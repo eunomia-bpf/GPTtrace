@@ -16,7 +16,7 @@ DOC_PATH = PROJECT_ROOT_PATH / "bpf_tutorial"/ "src"
 DATA_SAVE_PATH = PROJECT_ROOT_PATH / "data_save"
 VECTOR_DATABASE_PATH = DATA_SAVE_PATH / "vector_database"
 BCC_FUNC_CALL_PATH = DATA_SAVE_PATH / "funcs.json"
-
+MODEL_NAME = "gpt-3.5-turbo-0613"
 
 DEFAULT_CONFIG = {
     "DEFAULT_MODEL": os.getenv("DEFAULT_MODEL", "gpt-3.5-turbo"),
@@ -24,7 +24,8 @@ DEFAULT_CONFIG = {
     "DATA_SAVE_PATH": os.getenv("DATA_SAVE_PATH", DATA_SAVE_PATH),
     "VECTOR_DATABASE_PATH": os.getenv("VECTOR_DATABASE_PATH", VECTOR_DATABASE_PATH),
     "BCC_FUNC_CALL_PATH": os.getenv("BCC_FUNC_CALL_PATH", BCC_FUNC_CALL_PATH),
-    "DOC_PATH": os.getenv("DOC_PATH", DOC_PATH)
+    "DOC_PATH": os.getenv("DOC_PATH", DOC_PATH),
+    "MODEL_NAME": os.getenv("MODEL_NAME", MODEL_NAME)
 }
 
 class Config(dict):

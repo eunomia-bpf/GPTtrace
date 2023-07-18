@@ -9,22 +9,22 @@ An experiment for generating eBPF programs and tracing with GPT and natural lang
 
 ## Key Features 💡
 
-### Interact and Tracing your Linux with natural language, it can tell how to write eBPF programs in `BCC`, `libbpf` styles.
+### Interact and Tracing your Linux with natural language
 
 example: tracing with Count page faults by process
 
-<img src="doc/result.png" alt="Image" width="600">
+<img src="doc/trace.png" alt="Image" width="600">
+
+- start tracing with natural language
+- let AI explain the result to you
 
 ### Generate eBPF programs with natural language
 
-```shell
-$ python3 gpttrace "Write a program that installs a tracepoint handler which is triggered by write syscall"
-```
+example: Write a program that installs a tracepoint handler which is triggered by write syscall, but don't run it
 
 <img src="doc/generate.png" alt="Image" width="600">
 
 
-The generated eBPF program will be stored in the generate.bpf.c file, and you can compile this program using the clang or ecc tools.
 
 For detail documents and tutorials about how to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) (a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
 

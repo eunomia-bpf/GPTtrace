@@ -1,12 +1,27 @@
 import os
+import json
 import shutil
 import tempfile
+import openai
 
 from gpttrace.utils.common import get_doc_content_for_query, init_conversation
-from gpttrace.prompt import construct_running_prompt, construct_prompt_on_error
+from gpttrace.prompt import construct_running_prompt, construct_prompt_on_error, construct_prompt_for_explain
 from gpttrace.bpftrace import run_bpftrace
 
-def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_prompt: str = None) -> None:
+
+def call_gpt_api(prompt: str) -> str:
+    """
+    This function sends a list of messages to the GPT model
+    """
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        messages=messages,
+    )
+    return response["choices"][0]["message"]["content"]
+
+
+def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_prompt: str = None, output: str = None) -> None:
     """
     Convert the user request into a BPF command and execute it.
 
@@ -18,19 +33,20 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_pro
         print("Retry times exceeded...")
     # agent_chain, index = init_conversation(need_train, verbose)
     # print("Sending query to ChatGPT: " + user_input)
-    try:
-        if previous_prompt is None:
-            prompt = construct_running_prompt(user_input)
-        else:
-            prompt = construct_prompt_on_error(previous_prompt, user_input, output)
-        res = run_bpftrace(prompt, verbose)
-        if res["stderr"] != '':
-            print("output: " + res)
-            print("retry time " + str(retry) + "...")
-            # retry
-            res = execute(user_input, verbose, retry - 1, prompt)
-        else:
-            print("AI explanation:")
-            
-    except Exception as e:
-        print("retry time " + str(retry) + " " + str(e))
+    if previous_prompt is None:
+        prompt = construct_running_prompt(user_input)
+    else:
+        prompt = construct_prompt_on_error(
+            previous_prompt, user_input, output)
+    res = run_bpftrace(prompt, verbose)
+    if res["stderr"] != '':
+        print("output: " + json.dumps(res))
+        print("retry time " + str(retry) + "...")
+        # retry
+        res = execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
+    else:
+        print("AI explanation:")
+        prompt = construct_prompt_for_explain(user_input, res["stdout"])
+        explain = call_gpt_api(prompt)
+        print(explain)
+

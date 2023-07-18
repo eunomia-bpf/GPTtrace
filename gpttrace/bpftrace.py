@@ -8,7 +8,7 @@ import threading
 functions = [
     {
         "name": "bpftrace",
-        "description": "A high-level tracing language for Linux enhanced Berkeley Packet Filter (eBPF)",
+        "description": "A tool use to run bpftrace eBPF programs",
         "parameters": {
             "type": "object",
             "properties": {
@@ -74,9 +74,27 @@ functions = [
             },
             "required": ["program"]
         }
-
+    },
+    {
+        "name": "SaveFile",
+        "description": "Save the eBPF program to file",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "type": "string",
+                    "description": "the file name to save to"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "the file content"
+                }
+            },
+            "required": ["filename", "continue"]
+        }
     }
 ]
+
 
 def run_command_with_timeout(command: str, timeout: int) -> dict:
     """
@@ -91,29 +109,39 @@ def run_command_with_timeout(command: str, timeout: int) -> dict:
     # Start the process
     with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
         timer = threading.Timer(timeout, process.kill)
+        stdout = ""
+        stderr = ""
         try:
             # Set a timer to kill the process if it doesn't finish within the timeout
             timer.start()
-            accept_stdout = ""
             while process.poll() is None:
                 # Only try to read output if the process is still running
                 if process.stdout.readable():
                     line = process.stdout.read()
                     print(line, end='')
-                    accept_stdout += line
+                    stdout += line
             # Wait for the process to finish and get the output
-            stdout, stderr = process.communicate()
+            last_stdout, last_stderr = process.communicate()
+            stdout += last_stdout
+            stderr += last_stderr
         except Exception as e:
             print("Exception: " + str(e))
         finally:
             # Make sure the timer is canceled
             timer.cancel()
+            if process.poll() is None and process.stdout.readable():
+                stdout += process.stdout.read()
+                print(stdout)
+            if process.poll() is None and process.stderr.readable():
+                stderr += process.stderr.read()
+                print(stderr)
             return {
                 "command": ' '.join(command),
                 "stdout": stdout,
                 "stderr": stderr,
                 "returncode": process.returncode
             }
+
 
 def construct_command(operation: dict) -> list:
     """
@@ -148,6 +176,7 @@ def construct_command(operation: dict) -> list:
     # ...add other options similarly...
     return cmd
 
+
 def run_bpftrace(prompt: str, verbose: bool = False) -> object:
     """
     This function sends a list of messages and functions to the GPT model
@@ -162,7 +191,7 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> object:
     # Send the conversation and available functions to GPT
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="gpt-3.5-turbo",
         messages=messages,
         functions=functions,
         function_call="auto",  # auto is default, but we'll be explicit
@@ -173,26 +202,50 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> object:
     # Check if GPT wanted to call a function
     if response_message.get("function_call"):
         full_command = ["sudo"]
-        full_command.append(response_message["function_call"]["name"])
-        args = json.loads(response_message["function_call"]["arguments"])
+        if response_message["function_call"]["name"] == "bpftrace":
+            # call bpftrace function
+            full_command.append(response_message["function_call"]["name"])
+            args = json.loads(response_message["function_call"]["arguments"])
 
-        command = construct_command(args)
-        full_command.extend(command)
-        timeout = 20  # default is running for 20 seconds
-        if args.get("timeout"):
-            timeout = args["timeout"]
-        res = run_command_with_timeout(full_command, int(timeout))
-        if args.get("continue") and res["stderr"] == "":
-            # continue conversation
-            res["stderr"] = "The conversation shall not complete."
-        return res
+            command = construct_command(args)
+            full_command.extend(command)
+            timeout = 300  # default is running for 5 mins
+            if args.get("timeout"):
+                timeout = args["timeout"]
+            # run the bpftrace command
+            res = run_command_with_timeout(full_command, int(timeout))
+            if args.get("continue") and res["stderr"] == "":
+                # continue conversation
+                res["stderr"] = "The conversation shall not complete."
+            return res
+        elif response_message["function_call"]["name"] == "SaveFile":
+            # call save to file, need to save the response data to a file
+            args = json.loads(response_message["function_call"]["arguments"])
+            filename = args["filename"]
+            print("Save to file: " + filename)
+            print(args["content"])
+            with open(filename, 'w') as file:
+                file.write(args["content"])
+            res = {
+                "command": "SaveFile",
+                "stdout": args["content"],
+                "stderr": "",
+                "returncode": 0
+            }
+            return res
     else:
-        return response_message
+        # not function call
+        return {
+            "command": "response_message",
+            "stdout": response_message["content"],
+            "stderr": "",
+            "returncode": 0
+        }
 
 
 class TestRunBpftrace(unittest.TestCase):
     def test_summary(self):
-        res = run_bpftrace("tracing with Count page faults by process")
+        res = run_bpftrace("tracing with Count page faults by process for 3s")
         print(res)
         print(res["stderr"])
 
@@ -231,10 +284,12 @@ class TestRunBpftrace(unittest.TestCase):
         operation = json.loads(operation_json)
         command = construct_command(operation)
         print(command)
-    
+
     def test_run_command_with_timeout_short_live(self):
         command = ["ls", "-l"]
         timeout = 5
         result = run_command_with_timeout(command, timeout)
+        print(result)
+        self.assert_(result["stdout"] != "")
         self.assertEqual(result["command"], "ls -l")
         self.assertEqual(result["returncode"], 0)
