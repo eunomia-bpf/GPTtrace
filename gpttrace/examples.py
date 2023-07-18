@@ -39,12 +39,15 @@ bpftrace -e 'profile:hz:99 /pid == 189/ { @[ustack] = count(); }'
 
 # Files opened, for processes in the root cgroup-v2
 bpftrace -e 'tracepoint:syscalls:sys_enter_openat /cgroup == cgroupid("/sys/fs/cgroup/unified/mycg")/ { printf("%s\n", str(args->filename)); }'
+
 """
 
 def get_bpftrace_basic_examples(text: str) -> str:
     return simple_examples
 
 def construct_bpftrace_examples(text: str) -> str:
-    basic_examples = get_bpftrace_basic_examples(text)
-    # TODO: add more examples
-    return basic_examples
+    examples = get_bpftrace_basic_examples(text)
+    # docs = db.similarity_search(text)
+    # examples += "\n The following is a more complex example: \n"
+    # examples += docs[0].page_content
+    return examples

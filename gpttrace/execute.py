@@ -38,6 +38,8 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_pro
     else:
         prompt = construct_prompt_on_error(
             previous_prompt, user_input, output)
+    if verbose is True:
+        print("Prompt: " + prompt)
     res = run_bpftrace(prompt, verbose)
     if res["stderr"] != '':
         print("output: " + json.dumps(res))
@@ -45,8 +47,11 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_pro
         # retry
         res = execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
     else:
+        # success
         print("AI explanation:")
         prompt = construct_prompt_for_explain(user_input, res["stdout"])
+        if verbose is True:
+            print("Prompt: " + prompt)
         explain = call_gpt_api(prompt)
         print(explain)
 

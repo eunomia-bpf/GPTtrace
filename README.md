@@ -20,18 +20,20 @@ example: tracing with Count page faults by process
 
 ### Generate eBPF programs with natural language
 
-example: Write a program that installs a tracepoint handler which is triggered by write syscall, but don't run it
+example: Write a bpf program that installs a tracepoint handler which is triggered by write syscall, save the bpf program to a file and exit without actual running it
 
 <img src="doc/generate.png" alt="Image" width="600">
 
-
+We use examples from [bpftrace tools](tools) to create 
 
 For detail documents and tutorials about how to write eBPF programs, please refer to:  [`bpf-developer-tutorial`](https://github.com/eunomia-bpf/bpf-developer-tutorial) (a libbpf tool tutorial to teach ChatGPT to write eBPF programs)
 
-### Choose the right command line tool to complete the tracking task
+### Choose the right bcc command line tool to complete the tracking task
+
+Use the right bcc tools to trace the kernel
 
 ```console
-$ python3 gpttrace -c memleak-bpfcc "Trace allocations and display each individual allocator function call"
+$ python3 gpttrace "Trace allocations and display each individual allocator function call"
  Run:  sudo memleak-bpfcc --trace 
 Attaching to kernel allocators, Ctrl+C to quit.
 (b'Relay(35)', 402, 6, b'd...1', 20299.252425, b'alloc exited, size = 4096, result = ffff8881009cc000')
