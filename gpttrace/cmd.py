@@ -5,7 +5,7 @@ import json
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
-from gpttrace.utils.prompt import func_call_prompt
+from gpttrace.prompt import func_call_prompt
 from gpttrace.config import cfg
 
 def cmd(cmd_name: str, query: str, verbose=False) -> None:
@@ -226,7 +226,6 @@ def is_positional_arg(cmd_name, arg) -> bool:
     if positional_dict.get(cmd_name) is not None:
         return arg in positional_dict[cmd]
     return False
-
 
 if __name__ == "__main__":
     cmd("print 1 second summaries, 10 times", True)
