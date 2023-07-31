@@ -91,7 +91,7 @@ functions = [
                     "description": "the file content"
                 }
             },
-            "required": ["filename", "continue"]
+            "required": ["filename", "content"]
         }
     }
 ]
