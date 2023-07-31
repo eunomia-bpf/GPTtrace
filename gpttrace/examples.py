@@ -1,4 +1,7 @@
 import os
+from langchain.document_loaders import JSONLoader
+from langchain.vectorstores import FAISS
+from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain.vectorstores import DocArrayInMemorySearch
 # from langchain.document_loaders import DirectoryLoader
@@ -51,8 +54,26 @@ bpftrace -e 'tracepoint:syscalls:sys_enter_openat /cgroup == cgroupid("/sys/fs/c
 
 """
 
-def get_bpftrace_basic_examples(text: str) -> str:
-    return simple_examples
+def get_bpftrace_basic_examples(query: str) -> str:
+    loader = JSONLoader(
+        file_path='./tools/examples.json',
+        jq_schema='.data[].content',
+        json_lines=True
+    )
+    documents = loader.load()
+    embeddings = OpenAIEmbeddings()
+
+    # Check if the vector database files exist
+    if not (os.path.exists("./data_save/vector_db.faiss") and os.path.exists("./data_save/vector_db.pkl")):
+        db = FAISS.from_documents(documents, embeddings)
+        db.save_local("./data_save", index_name="vector_db")
+    else:
+        # Load an existing FAISS vector store
+        db = FAISS.load_local("./data_save", index_name="vector_db", embeddings=embeddings)
+
+    results = db.search(query, search_type='similarity')
+    results = [result.page_content for result in results]
+    return "\n".join(results[:2])
 
 def construct_bpftrace_examples(text: str) -> str:
     examples = get_bpftrace_basic_examples(text)
@@ -60,3 +81,6 @@ def construct_bpftrace_examples(text: str) -> str:
     # examples += "\n The following is a more complex example: \n"
     # examples += docs[0].page_content
     return examples
+
+if __name__ == "__main__":
+    get_bpftrace_basic_examples("Trace allocations and display each individual allocator function call")

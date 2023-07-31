@@ -7,10 +7,6 @@ from gpttrace.cmd import cmd
 from gpttrace.execute import execute
 from gpttrace.utils.common import pretty_print
 
-OPENAI_API_KEY = "OPENAI_API_KEY"
-PROMPTS_DIR = pathlib.Path("./prompts")
-DOC_PATH = "./bpf_tutorial/src"
-LOCAL_PATH = pathlib.Path(__file__).resolve().parent
 
 def main() -> None:
     """
@@ -31,15 +27,14 @@ def main() -> None:
         action="store_true")
     parser.add_argument(
         "-k", "--key",
-        help=f"Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `{OPENAI_API_KEY}`",
+        help="Openai api key, see `https://platform.openai.com/docs/quickstart/add-your-api-key` or passed through `OPENAI_API_KEY`",
         metavar="OPENAI_API_KEY")
     parser.add_argument('input_string', type=str, help='Your question or request for a bpf program')
     args = parser.parse_args()
 
-    if os.getenv(OPENAI_API_KEY, args.key) is None:
+    if os.getenv('OPENAI_API_KEY', args.key) is None:
         print(f"Either provide your access token through `-k` or through environment variable {OPENAI_API_KEY}")
         return
-
     if args.cmd is not None:
         cmd(args.cmd[0], args.cmd[1], args.verbose)
     elif args.input_string is not None:
