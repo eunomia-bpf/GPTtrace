@@ -3,6 +3,7 @@ import json
 import shutil
 import tempfile
 import openai
+from litellm import completion
 
 from gpttrace.utils.common import get_doc_content_for_query, init_conversation
 from gpttrace.prompt import construct_running_prompt, construct_prompt_on_error, construct_prompt_for_explain
@@ -20,6 +21,19 @@ def call_gpt_api(prompt: str) -> str:
     )
     return response["choices"][0]["message"]["content"]
 
+def call_litellm(prompt: str) -> str:
+    """
+    This function sends a list of messages to the selected litellm model
+    OpenAI, Azure, Cohere, Anthropic, Replicate models supported
+    """
+    messages = [{"role": "user", "content": prompt}]
+    # see supported models here: 
+    # https://litellm.readthedocs.io/en/latest/supported/
+    response = completion(
+        model="claude-instant-1",
+        messages=messages,
+    )
+    return response["choices"][0]["message"]["content"]
 
 def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_prompt: str = None, output: str = None) -> None:
     """
