@@ -7,6 +7,8 @@
 
 An experiment for generating eBPF programs and tracing with GPT and natural language
 
+Want the online version? please see [https://github.com/eunomia-bpf/GPT2Bpftrace](https://github.com/eunomia-bpf/GPT2Bpftrace) for **online demo**!
+
 ## Key Features 💡
 
 ### Interact and Tracing your Linux with natural language
