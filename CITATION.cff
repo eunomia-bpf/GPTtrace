@@ -1,0 +1,9 @@
+@software{GPTtrace,
+  author = {Yusheng zheng, Maolin Chen},
+  doi = {10.5281/zenodo.8403254},
+  month = {10},
+  title = {{Generate eBPF programs and tracing with ChatGPT and natural language}},
+  url = {https://github.com/github-linguist/linguist},
+  version = {0.0.1},
+  year = {2023}
+}
