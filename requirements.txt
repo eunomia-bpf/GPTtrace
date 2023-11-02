@@ -2,6 +2,7 @@ langchain==0.0.227
 llama_index==0.7.3
 marko==2.0.0
 openai==0.27.8
+litellm==0.1.226
 prompt_toolkit==3.0.38
 Pygments==2.15.1
 pygments_markdown_lexer==0.1.0.dev39
