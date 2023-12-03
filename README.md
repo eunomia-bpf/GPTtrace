@@ -8,7 +8,7 @@
 
 An experiment for generating eBPF programs and tracing with GPT and natural language
 
-Want the online version? please see [https://github.com/eunomia-bpf/GPT2Bpftrace](https://github.com/eunomia-bpf/GPT2Bpftrace) for **online demo**!
+Want the online version? please see [GPTtrace-web](https://github.com/eunomia-bpf/GPTtrace-web) for **online demo**!
 
 ## Key Features 💡
 
@@ -57,17 +57,11 @@ Attaching to kernel allocators, Ctrl+C to quit.
 ![GPTtrace/doc/how-it-works.png](doc/how-it-works.png)
 
 1. **User Input**: The user provides their operating system information and kernel version. This information is crucial as it helps to tailor the eBPF program to the specific environment of the user.
-
 2. **Prompt Construction**: The user's input, along with the OS info and kernel version, is used to construct a prompt. This prompt is designed to guide the generation of the eBPF program.
-
 3. **Vector Database Query**: The constructed prompt is used to query the Vector Database for eBPF program examples. These examples serve as a basis for generating the eBPF program that will be inserted into the kernel.
-
-4. **Hook Point Identification**: The GPT API is used to identify potential hook points in the eBPF program. These hook points are locations in the code where the eBPF program can be inserted to monitor or modify the behavior of the kernel.
-
+4. **Hook Point Identification**: The GPT API is used to identify potential hook points in the eBPF program. These hook points are locations in the code where the eBPF program can be inseted to monitor or modify the behavior of the kernel.
 5. **eBPF Program Generation**: The identified hook points, along with the examples from the Vector Database, are used to generate the eBPF program. This program is designed to be inserted into the kernel to perform the desired tracing tasks.
-
 6. **Kernel Insertion**: The generated eBPF program is inserted into the kernel. If there are any errors during this process, the tool will retry the steps from querying the Vector Database to kernel insertion a few times.
-
 7. **Result Explanation**: Once the eBPF program is successfully inserted into the kernel, the AI will explain the result to the user. This includes an explanation of what the eBPF program is doing and how it is interacting with the kernel.
 
 This process ensures that the eBPF program is tailored to the user's specific environment and needs, and that the user understands how the program works and what it is doing.
