@@ -10,6 +10,8 @@ An experiment for generating eBPF programs and tracing with GPT and natural lang
 
 Want the online version? please see [GPTtrace-web](https://github.com/eunomia-bpf/GPTtrace-web) for **online demo**!
 
+Also our paper: "KEN: Kernel Extensions using Natural Language" at https://arxiv.org/abs/2312.05531
+
 ## Key Features 💡
 
 ### Interact and Tracing your Linux with natural language
