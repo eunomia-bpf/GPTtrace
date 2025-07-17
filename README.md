@@ -6,7 +6,9 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf/badge)](https://www.codefactor.io/repository/github/eunomia-bpf/eunomia-bpf)
 [![DOI](https://zenodo.org/badge/603351016.svg)](https://zenodo.org/badge/latestdoi/603351016)
 
-An experiment for generating eBPF programs and tracing with GPT and natural language
+An experiment for generating eBPF programs and tracing with GPT and natural language.
+
+This experiment is not suitable for production use. For a better ways to use AI to generate eBPF programs or trace kernel, you can check [MCPtrace: A mcp server for eBPF tracing](https://github.com/eunomia-bpf/MCPtrace)
 
 Want the online version? please see [GPTtrace-web](https://github.com/eunomia-bpf/GPTtrace-web) for **online demo**!
 
