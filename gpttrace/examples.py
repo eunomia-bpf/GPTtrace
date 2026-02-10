@@ -1,7 +1,7 @@
 import os
-from langchain.document_loaders import JSONLoader
-from langchain.vectorstores import FAISS
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.document_loaders import JSONLoader
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import OpenAIEmbeddings
 # from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain.vectorstores import DocArrayInMemorySearch
 # from langchain.document_loaders import DirectoryLoader
