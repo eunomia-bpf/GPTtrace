@@ -4,10 +4,10 @@ from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import PygmentsTokens
 from pygments_markdown_lexer import MarkdownLexer
 from typing import Any
-from langchain_classic.chains import ConversationChain
+from langchain.chains import ConversationChain
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.llms import OpenAI
-from langchain_classic.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory
 from llama_index.core import Settings, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
 from llama_index.llms.openai import OpenAI as LlamaOpenAI
 

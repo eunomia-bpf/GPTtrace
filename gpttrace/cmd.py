@@ -2,9 +2,9 @@ import subprocess
 import openai
 import json
 
-from langchain_classic.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_models import ChatOpenAI
-from langchain_classic.chains import ConversationChain
+from langchain.chains import ConversationChain
 from gpttrace.prompt import func_call_prompt
 from gpttrace.config import cfg
 
