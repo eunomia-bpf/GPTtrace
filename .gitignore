@@ -166,3 +166,4 @@ cython_debug/
 *.tmp
 
 bpf_tutorial
+*.whl

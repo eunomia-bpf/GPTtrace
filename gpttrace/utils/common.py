@@ -4,10 +4,12 @@ from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import PygmentsTokens
 from pygments_markdown_lexer import MarkdownLexer
 from typing import Any
-from langchain import ConversationChain, OpenAI
-from langchain.chat_models import ChatOpenAI
-from langchain.chains.conversation.memory import ConversationBufferMemory
-from llama_index import LLMPredictor, ServiceContext, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
+from langchain.chains import ConversationChain
+from langchain_community.chat_models import ChatOpenAI
+from langchain_community.llms import OpenAI
+from langchain.memory import ConversationBufferMemory
+from llama_index.core import Settings, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
+from llama_index.llms.openai import OpenAI as LlamaOpenAI
 
 from gpttrace.config import cfg
 
@@ -68,12 +70,9 @@ def init_conversation(need_train: bool, verbose: bool) -> list[ConversationChain
                         md_files.append(os.path.join(root, file))
             print(f":: {cfg.get('DOC_PATH')}, {md_files}")
             documents = SimpleDirectoryReader(input_files=md_files).load_data()
-            llm_predictor = LLMPredictor(llm=OpenAI(
-                temperature=0, model_name="text-davinci-003"))
-            service_context = ServiceContext.from_defaults(
-                llm_predictor=llm_predictor)
-            index = VectorStoreIndex.from_documents(
-                documents, service_context=service_context)
+            # Use the modern Settings API instead of deprecated LLMPredictor and ServiceContext
+            Settings.llm = LlamaOpenAI(temperature=0, model="text-davinci-003")
+            index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(vector_path)
             print(
                 f"Training completed, {vector_path} has been saved.")

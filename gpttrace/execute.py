@@ -3,11 +3,17 @@ import json
 import shutil
 import tempfile
 import openai
-from litellm import completion
 
 from gpttrace.utils.common import get_doc_content_for_query, init_conversation
 from gpttrace.prompt import construct_running_prompt, construct_prompt_on_error, construct_prompt_for_explain
 from gpttrace.bpftrace import run_bpftrace
+
+# litellm is optional and only used if call_litellm is called
+try:
+    from litellm import completion
+    HAS_LITELLM = True
+except ImportError:
+    HAS_LITELLM = False
 
 
 def call_gpt_api(prompt: str) -> str:
@@ -26,6 +32,8 @@ def call_litellm(prompt: str) -> str:
     This function sends a list of messages to the selected litellm model
     OpenAI, Azure, Cohere, Anthropic, Replicate models supported
     """
+    if not HAS_LITELLM:
+        raise ImportError("litellm is not installed. Install it with: pip install litellm")
     messages = [{"role": "user", "content": prompt}]
     # see supported models here: 
     # https://litellm.readthedocs.io/en/latest/supported/
