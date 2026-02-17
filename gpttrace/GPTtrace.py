@@ -26,7 +26,7 @@ def main() -> None:
         action="store_true")
     parser.add_argument(
         "-k", "--key",
-        help="Openai api key, see https://platform.openai.com or passed through OPENAI_API_KEY",
+        help="OpenAI API key, see https://platform.openai.com or passed through OPENAI_API_KEY",
         metavar="OPENAI_API_KEY")
     parser.add_argument('input_string', type=str, help='Your question or request for a bpf program')
     args = parser.parse_args()

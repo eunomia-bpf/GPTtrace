@@ -72,8 +72,10 @@ def init_conversation(need_train: bool, verbose: bool
                         md_files.append(os.path.join(root, file))
             print(f":: {cfg.get('DOC_PATH')}, {md_files}")
             documents = SimpleDirectoryReader(input_files=md_files).load_data()
-            # Note: Settings.llm is no longer set as it requires OpenAI v1.x
-            # The vector index can work without it for basic storage/retrieval
+            # Note: Settings.llm is no longer set as it requires OpenAI v1.x API
+            # The vector index can still perform basic document storage and retrieval
+            # without an LLM configured. If advanced query features are needed,
+            # users should configure Settings.llm with a compatible LLM provider.
             index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(vector_path)
             print(
