@@ -25,14 +25,13 @@ def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> str:
     query_engine = index.as_query_engine()
     response = query_engine.query(query)
     related_contents = response.source_nodes
-    if related_contents is not None:
-        contents = "\nThere are some related information about this query:\n"
-        for i, content in enumerate(related_contents):
-            info = f"Info {i}: {content.node.get_text()}\n"
-            contents += info
-        return contents
-    else:
+    if related_contents is None:
         return None
+    contents = "\nThere are some related information about this query:\n"
+    for i, content in enumerate(related_contents):
+        info = f"Info {i}: {content.node.get_text()}\n"
+        contents += info
+    return contents
 
 def pretty_print(input_info: str, *args: Any, lexer: Any = MarkdownLexer,
                  **kwargs: Any) -> None:
