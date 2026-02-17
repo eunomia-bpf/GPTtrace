@@ -80,4 +80,3 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5,
             print("Prompt: " + prompt)
         explain = call_gpt_api(prompt)
         print(explain)
-
