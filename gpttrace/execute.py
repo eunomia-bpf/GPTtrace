@@ -1,12 +1,14 @@
-import os
+"""eBPF program execution module."""
 import json
-import shutil
-import tempfile
+
 import openai
 
-from gpttrace.utils.common import get_doc_content_for_query, init_conversation
-from gpttrace.prompt import construct_running_prompt, construct_prompt_on_error, construct_prompt_for_explain
 from gpttrace.bpftrace import run_bpftrace
+from gpttrace.prompt import (
+    construct_prompt_for_explain,
+    construct_prompt_on_error,
+    construct_running_prompt
+)
 
 # litellm is optional and only used if call_litellm is called
 try:
@@ -33,9 +35,10 @@ def call_litellm(prompt: str) -> str:
     OpenAI, Azure, Cohere, Anthropic, Replicate models supported
     """
     if not HAS_LITELLM:
-        raise ImportError("litellm is not installed. Install it with: pip install litellm")
+        raise ImportError(
+            "litellm is not installed. Install it with: pip install litellm")
     messages = [{"role": "user", "content": prompt}]
-    # see supported models here: 
+    # see supported models here:
     # https://litellm.readthedocs.io/en/latest/supported/
     response = completion(
         model="claude-instant-1",
@@ -43,7 +46,8 @@ def call_litellm(prompt: str) -> str:
     )
     return response["choices"][0]["message"]["content"]
 
-def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_prompt: str = None, output: str = None) -> None:
+def execute(user_input: str, verbose: bool = False, retry: int = 5,
+            previous_prompt: str = None, output: str = None) -> None:
     """
     Convert the user request into a BPF command and execute it.
 
@@ -67,7 +71,7 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5, previous_pro
         print("output: " + json.dumps(res))
         print("retry time " + str(retry) + "...")
         # retry
-        res = execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
+        execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
     else:
         # success
         print("AI explanation:")

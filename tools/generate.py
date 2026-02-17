@@ -1,30 +1,33 @@
-import re
-import openai
-import os
-import json
+"""Script for generating eBPF program examples and documentation."""
 import glob
+import json
+import os
+import re
 import time
+
+import openai
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
 def get_bpf_summary(bpf_code):
+    """Generate a summary of BPF code using GPT."""
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": 
+            {"role": "user", "content":
                 f"""
 Given this BPF code:
 
 {bpf_code}
 
-Provide a concise and clear summary in one or two sentences. 
-Frame the explanation as a user's request to a developer to write a BPF code. 
-Avoid beginning with phrases like 'This BPF code is...' Instead, 
+Provide a concise and clear summary in one or two sentences.
+Frame the explanation as a user's request to a developer to write a BPF code.
+Avoid beginning with phrases like 'This BPF code is...' Instead,
 start with action-oriented phrases such as 'Write a BPF code that...'
 """
-                
-                
+
+
                 }
         ],
         max_tokens=1500
@@ -35,6 +38,7 @@ start with action-oriented phrases such as 'Write a BPF code that...'
 
 
 def get_all_bpf_in_dir(directory):
+    """Get all BPF programs from a directory and generate summaries."""
     all_files = glob.glob(directory + '/*.bt')
     all_bpf = []
     for file in all_files:
@@ -42,7 +46,7 @@ def get_all_bpf_in_dir(directory):
         # sleep for a short time to avoid hitting the rate limit
         # Sleep for 5 seconds
         time.sleep(3)
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding='utf-8') as f:
             bpf_code = f.read()
             summary = get_bpf_summary(bpf_code)
             all_bpf.append({
@@ -51,13 +55,14 @@ def get_all_bpf_in_dir(directory):
             })
             print(bpf_code)
             print(summary)
-            
+
     return all_bpf
 
 def write_example_to_json():
+    """Write BPF examples to JSON file."""
     directory = './'
     all_bpf = get_all_bpf_in_dir(directory)
-    with open('output.json', 'w') as outfile:
+    with open('output.json', 'w', encoding='utf-8') as outfile:
         json.dump(all_bpf, outfile)
 
 def remove_multiline_comments(lines):
@@ -76,7 +81,7 @@ def remove_multiline_comments(lines):
         if not inside_comment:
             start_index = line.find('/*')
             end_index = line.find('*/', start_index + 2)
-            
+
             if start_index != -1 and end_index != -1:
                 inside_comment = False
                 cleaned_line = line[:start_index] + line[end_index + 2:]
@@ -98,6 +103,7 @@ def remove_multiline_comments(lines):
     return cleaned_content
 
 def reformat():
+    """Reformat BPF examples and save to JSON."""
     rearranged_data = {"data": []}
     with open("./tools/output.json", mode='r', encoding='utf-8') as file:
         contents = json.load(file)
@@ -109,6 +115,6 @@ def reformat():
 
     with open("./tools/examples.json", 'w', encoding='utf-8') as file:
         json.dump(rearranged_data, file)
-    
+
 if __name__ == "__main__":
     reformat()

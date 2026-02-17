@@ -1,4 +1,4 @@
-import os
+"""Prompt construction utilities for GPTtrace."""
 from gpttrace.examples import construct_bpftrace_examples
 
 
@@ -6,23 +6,26 @@ def construct_prompt_on_error(previous_prompt: str, text: str, output: str) -> s
     """
     Construct prompts when an error occurs.
 
+    :param previous_prompt: The previous prompt.
     :param text: User request.
+    :param output: Error output.
     :return: Prompt.
     """
-    examples = construct_bpftrace_examples(text)
+    construct_bpftrace_examples(text)
     return f"""
     {previous_prompt}
 
     The previous command failed to execute or not finished.
-    Maybe you can try list the attach points and choose one to attach, 
+    Maybe you can try list the attach points and choose one to attach,
     if you have not done so before.
     The origin command and output is as follows:
-    
+
     {output}
     """
 
 def construct_prompt_for_explain(text: str, output: str) -> str:
-    # fix the token limi
+    """Construct a prompt for explaining bpftrace output."""
+    # fix the token limit
     if len(output) > 2048:
         output = output[:4096]
     return f"""
@@ -88,7 +91,8 @@ def func_call_prompt(cmd: str, help_doc: str) -> str:
     }
     ```"""
     prompts = f"""
-    Please generate a JSON representation of the command `{cmd}` as per the provided help documentation:
+    Please generate a JSON representation of the command `{cmd}` as per the
+    provided help documentation:
 
     {help_doc}
 

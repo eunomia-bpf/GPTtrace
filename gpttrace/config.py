@@ -1,3 +1,4 @@
+"""Configuration management for GPTtrace."""
 import os
 
 from getpass import getpass

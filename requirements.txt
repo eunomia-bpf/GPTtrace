@@ -1,6 +1,6 @@
 langchain>=0.3.0,<1.0.0
 langchain-community>=0.3.0,<0.4.0
-llama_index==0.7.3
+llama-index-core>=0.12.0
 marko==2.0.0
 openai==0.27.8
 prompt_toolkit==3.0.38

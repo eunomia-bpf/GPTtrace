@@ -1,3 +1,4 @@
+"""Utilities module for GPTtrace."""
 import os
 import sys
 

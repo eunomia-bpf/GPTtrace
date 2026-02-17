@@ -1,15 +1,16 @@
+"""Common utility functions for GPTtrace."""
 import os
+from typing import Any
+
 import pygments
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+from langchain_community.chat_models import ChatOpenAI
+from llama_index.core import (SimpleDirectoryReader, StorageContext,
+                               VectorStoreIndex, load_index_from_storage)
 from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import PygmentsTokens
 from pygments_markdown_lexer import MarkdownLexer
-from typing import Any
-from langchain.chains import ConversationChain
-from langchain_community.chat_models import ChatOpenAI
-from langchain_community.llms import OpenAI
-from langchain.memory import ConversationBufferMemory
-from llama_index.core import Settings, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
-from llama_index.llms.openai import OpenAI as LlamaOpenAI
 
 from gpttrace.config import cfg
 
@@ -33,7 +34,8 @@ def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> str:
     else:
         return None
 
-def pretty_print(input_info: str, lexer: Any = MarkdownLexer, *args: Any, **kwargs: Any) -> None:
+def pretty_print(input_info: str, *args: Any, lexer: Any = MarkdownLexer,
+                 **kwargs: Any) -> None:
     """
     This function takes an input string and a lexer (default is MarkdownLexer), 
     lexes the input using the provided lexer, and then pretty prints the lexed tokens.
@@ -46,13 +48,14 @@ def pretty_print(input_info: str, lexer: Any = MarkdownLexer, *args: Any, **kwar
     tokens = list(pygments.lex(input_info, lexer=lexer()))
     print_formatted_text(PygmentsTokens(tokens), *args, **kwargs)
 
-def init_conversation(need_train: bool, verbose: bool) -> list[ConversationChain, VectorStoreIndex]:
+def init_conversation(need_train: bool, verbose: bool
+                      ) -> list[ConversationChain, VectorStoreIndex]:
     """
     Initialize the conversation and vector database.
 
     :param need_train: Whether you need to use a vector database.
     :verbose: Whether to print extra information.
-    :return: Containing two elements: The ConversationChain object is a conversation between a human and an AI. The VectorStoreIndex object is vector database.
+    :return: Containing two elements: ConversationChain and VectorStoreIndex.
     """
     model_name = cfg.get("DEFAULT_MODEL")
     llm = ChatOpenAI(model_name=model_name, temperature=0)
@@ -70,8 +73,8 @@ def init_conversation(need_train: bool, verbose: bool) -> list[ConversationChain
                         md_files.append(os.path.join(root, file))
             print(f":: {cfg.get('DOC_PATH')}, {md_files}")
             documents = SimpleDirectoryReader(input_files=md_files).load_data()
-            # Use the modern Settings API instead of deprecated LLMPredictor and ServiceContext
-            Settings.llm = LlamaOpenAI(temperature=0, model="text-davinci-003")
+            # Note: Settings.llm is no longer set as it requires OpenAI v1.x
+            # The vector index can work without it for basic storage/retrieval
             index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(vector_path)
             print(

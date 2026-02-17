@@ -1,10 +1,13 @@
+"""BPFtrace integration module for GPTtrace."""
 #!/bin/python
-import subprocess
-import openai
 import json
-import unittest
+import subprocess
+import sys
 import threading
+import unittest
 from typing import List, TypedDict
+
+import openai
 
 functions = [
     {
@@ -97,6 +100,7 @@ functions = [
 ]
 
 class CommandResult(TypedDict):
+    """Type definition for command execution results."""
     command: str
     stdout: str
     stderr: str
@@ -111,12 +115,13 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
     user_input = input("Enter 'y' to proceed: ")
     if user_input.lower() != 'y':
         print("Aborting...")
-        exit()
+        sys.exit(1)
     # Start the process
     with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
         timer = threading.Timer(timeout, process.kill)
         stdout = ""
         stderr = ""
+        returncode = None
         try:
             # Set a timer to kill the process if it doesn't finish within the timeout
             timer.start()
@@ -130,6 +135,7 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
             last_stdout, last_stderr = process.communicate()
             stdout += last_stdout
             stderr += last_stderr
+            returncode = process.returncode
         except Exception as e:
             print("Exception: " + str(e))
         finally:
@@ -141,12 +147,12 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
             if process.poll() is None and process.stderr.readable():
                 stderr += process.stderr.read()
                 print(stderr)
-            return {
-                "command": ' '.join(command),
-                "stdout": stdout,
-                "stderr": stderr,
-                "returncode": process.returncode
-            }
+        return {
+            "command": ' '.join(command),
+            "stdout": stdout,
+            "stderr": stderr,
+            "returncode": returncode
+        }
 
 
 def construct_command(operation: dict) -> list:
@@ -167,8 +173,8 @@ def construct_command(operation: dict) -> list:
     if "program" in operation:
         cmd += ["-e", operation["program"]]
     if "includeDir" in operation:
-        for dir in operation["includeDir"]:
-            cmd += ["-I", dir]
+        for include_dir in operation["includeDir"]:
+            cmd += ["-I", include_dir]
     if "usdtFileActivation" in operation and operation["usdtFileActivation"]:
         cmd += ["--usdt-file-activation"]
     if "unsafe" in operation and operation["unsafe"]:
@@ -230,7 +236,7 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> CommandResult:
             filename = args["filename"]
             print("Save to file: " + filename)
             print(args["content"])
-            with open(filename, 'w') as file:
+            with open(filename, 'w', encoding='utf-8') as file:
                 file.write(args["content"])
             res = {
                 "command": "SaveFile",
@@ -250,12 +256,16 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> CommandResult:
 
 
 class TestRunBpftrace(unittest.TestCase):
+    """Test cases for bpftrace integration."""
+
     def test_summary(self):
+        """Test running bpftrace with a summary request."""
         res = run_bpftrace("tracing with Count page faults by process for 3s")
         print(res)
         print(res["stderr"])
 
     def test_construct_command(self):
+        """Test construction of bpftrace commands."""
         operation_json = """
         {
             "bufferingMode": "full",
@@ -271,6 +281,7 @@ class TestRunBpftrace(unittest.TestCase):
         print(command)
 
     def test_construct_complex_command(self):
+        """Test construction of complex bpftrace commands."""
         operation_json = """
         {
             "bufferingMode": "full",
@@ -292,10 +303,11 @@ class TestRunBpftrace(unittest.TestCase):
         print(command)
 
     def test_run_command_with_timeout_short_live(self):
+        """Test running a short-lived command with timeout."""
         command = ["ls", "-l"]
         timeout = 5
         result = run_command_with_timeout(command, timeout)
         print(result)
-        self.assert_(result["stdout"] != "")
+        self.assertNotEqual(result["stdout"], "")
         self.assertEqual(result["command"], "ls -l")
         self.assertEqual(result["returncode"], 0)
