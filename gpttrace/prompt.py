@@ -7,13 +7,13 @@ def construct_prompt_on_error(previous_prompt: str, text: str, output: str) -> s
     Construct prompts when an error occurs.
 
     :param previous_prompt: The previous prompt.
-    :param text: User request.
+    :param text: User request (reserved for future use with examples).
     :param output: Error output.
     :return: Prompt.
     """
-    # Get examples related to the user's query (for potential future use)
-    # Currently not included in the prompt but could be added if needed
+    # Note: 'text' parameter is reserved for potential future use with examples
     # examples = construct_bpftrace_examples(text)
+    _ = text  # Acknowledge parameter is intentionally unused for now
     return f"""
     {previous_prompt}
 
