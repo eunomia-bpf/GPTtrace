@@ -11,7 +11,9 @@ def construct_prompt_on_error(previous_prompt: str, text: str, output: str) -> s
     :param output: Error output.
     :return: Prompt.
     """
-    construct_bpftrace_examples(text)
+    # Get examples related to the user's query (for potential future use)
+    # Currently not included in the prompt but could be added if needed
+    # examples = construct_bpftrace_examples(text)
     return f"""
     {previous_prompt}
 

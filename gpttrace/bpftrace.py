@@ -117,7 +117,8 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
         print("Aborting...")
         sys.exit(1)
     # Start the process
-    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                          text=True) as process:
         timer = threading.Timer(timeout, process.kill)
         stdout = ""
         stderr = ""
@@ -147,6 +148,9 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
             if process.poll() is None and process.stderr.readable():
                 stderr += process.stderr.read()
                 print(stderr)
+            # Ensure returncode is set even if there was an exception
+            if returncode is None and process.poll() is not None:
+                returncode = process.returncode
         return {
             "command": ' '.join(command),
             "stdout": stdout,
