@@ -72,8 +72,12 @@ def get_bpftrace_basic_examples(query: str) -> str:
         db.save_local("./data_save", index_name="vector_db")
     else:
         # Load an existing FAISS vector store
-        db = FAISS.load_local("./data_save", index_name="vector_db",
-                              embeddings=embeddings)
+        db = FAISS.load_local(
+            "./data_save",
+            index_name="vector_db",
+            embeddings=embeddings,
+            allow_dangerous_deserialization=True,
+        )
 
     results = db.search(query, search_type='similarity')
     results = [result.page_content for result in results]
