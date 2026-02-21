@@ -2,19 +2,16 @@
 from gpttrace.examples import construct_bpftrace_examples
 
 
-def construct_prompt_on_error(previous_prompt: str, text: str, output: str) -> str:
+def construct_prompt_on_error(previous_prompt: str, _text: str, output: str) -> str:
     """
     Construct prompts when an error occurs.
 
     :param previous_prompt: The previous prompt.
-    :param text: User request. Parameter reserved for API compatibility with future
-                 implementation that may include examples via construct_bpftrace_examples().
+    :param _text: User request. Parameter reserved for API compatibility with future
+                  implementation that may include examples.
     :param output: Error output.
     :return: Prompt.
     """
-    # Note: 'text' parameter is kept for API compatibility and future use
-    # Future enhancement: examples = construct_bpftrace_examples(text)
-    _ = text  # Acknowledge parameter is intentionally unused for now
     return f"""
     {previous_prompt}
 

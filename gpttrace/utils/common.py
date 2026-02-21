@@ -53,7 +53,7 @@ def init_conversation(need_train: bool, verbose: bool
     Initialize the conversation and vector database.
 
     :param need_train: Whether you need to use a vector database.
-    :verbose: Whether to print extra information.
+    :param verbose: Whether to print extra information.
     :return: Containing two elements: ConversationChain and VectorStoreIndex.
     """
     model_name = cfg.get("DEFAULT_MODEL")
