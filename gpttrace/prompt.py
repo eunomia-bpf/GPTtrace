@@ -30,7 +30,7 @@ def construct_prompt_for_explain(text: str, output: str) -> str:
     """Construct a prompt for explaining bpftrace output."""
     # fix the token limit
     if len(output) > 2048:
-        output = output[:4096]
+        output = output[:2048]
     return f"""
     please explain the output of the previous bpftrace result:
     
