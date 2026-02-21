@@ -71,7 +71,7 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5,
         print("output: " + json.dumps(res))
         print("retry time " + str(retry) + "...")
         # retry
-        execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
+        return execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
     else:
         # success
         print("AI explanation:")
