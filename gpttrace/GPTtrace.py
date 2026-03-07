@@ -1,4 +1,5 @@
 """GPTtrace main entry point module."""
+# pylint: disable=invalid-name
 #! /bin/env python
 import argparse
 import os

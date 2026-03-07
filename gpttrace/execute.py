@@ -1,5 +1,6 @@
 """eBPF program execution module."""
 import json
+from typing import Optional
 
 import openai
 
@@ -47,7 +48,8 @@ def call_litellm(prompt: str) -> str:
     return response["choices"][0]["message"]["content"]
 
 def execute(user_input: str, verbose: bool = False, retry: int = 5,
-            previous_prompt: str = None, output: str = None) -> None:
+            previous_prompt: Optional[str] = None,
+            output: Optional[str] = None) -> None:
     """
     Convert the user request into a BPF command and execute it.
 
@@ -57,6 +59,7 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5,
     """
     if retry == 0:
         print("Retry times exceeded...")
+        return
     # agent_chain, index = init_conversation(need_train, verbose)
     # print("Sending query to ChatGPT: " + user_input)
     if previous_prompt is None:
@@ -71,12 +74,13 @@ def execute(user_input: str, verbose: bool = False, retry: int = 5,
         print("output: " + json.dumps(res))
         print("retry time " + str(retry) + "...")
         # retry
-        return execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
-    else:
-        # success
-        print("AI explanation:")
-        prompt = construct_prompt_for_explain(user_input, res["stdout"])
-        if verbose is True:
-            print("Prompt: " + prompt)
-        explain = call_gpt_api(prompt)
-        print(explain)
+        execute(user_input, verbose, retry - 1, prompt, json.dumps(res))
+        return
+
+    # success
+    print("AI explanation:")
+    prompt = construct_prompt_for_explain(user_input, res["stdout"])
+    if verbose is True:
+        print("Prompt: " + prompt)
+    explain = call_gpt_api(prompt)
+    print(explain)

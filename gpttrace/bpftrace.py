@@ -5,7 +5,7 @@ import subprocess
 import sys
 import threading
 import unittest
-from typing import List, TypedDict
+from typing import Any, Dict, List, TypedDict
 
 import openai
 
@@ -122,7 +122,7 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
         timer = threading.Timer(timeout, process.kill)
         stdout = ""
         stderr = ""
-        returncode = None
+        returncode = -1
         try:
             # Set a timer to kill the process if it doesn't finish within the timeout
             timer.start()
@@ -137,8 +137,8 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
             stdout += last_stdout
             stderr += last_stderr
             returncode = process.returncode
-        except Exception as e:
-            print("Exception: " + str(e))
+        except (OSError, ValueError) as err:
+            print("Exception: " + str(err))
         finally:
             # Make sure the timer is canceled
             timer.cancel()
@@ -159,36 +159,38 @@ def run_command_with_timeout(command: List[str], timeout: int) -> CommandResult:
         }
 
 
-def construct_command(operation: dict) -> list:
+def construct_command(operation: Dict[str, Any]) -> List[str]:
     """
     This function constructs a command from a dictionary of options.
     """
-    cmd = []
-    if "bufferingMode" in operation:
-        cmd += ["-B", operation["bufferingMode"]]
-    if "format" in operation:
-        cmd += ["-f", operation["format"]]
-    if "outputFile" in operation:
-        cmd += ["-o", operation["outputFile"]]
-    if "debugInfo" in operation and operation["debugInfo"]:
-        cmd += ["-d"]
-    if "verboseDebugInfo" in operation and operation["verboseDebugInfo"]:
-        cmd += ["-dd"]
-    if "program" in operation:
-        cmd += ["-e", operation["program"]]
-    if "includeDir" in operation:
-        for include_dir in operation["includeDir"]:
-            cmd += ["-I", include_dir]
-    if "usdtFileActivation" in operation and operation["usdtFileActivation"]:
-        cmd += ["--usdt-file-activation"]
-    if "unsafe" in operation and operation["unsafe"]:
-        cmd += ["--unsafe"]
-    if "quiet" in operation and operation["quiet"]:
-        cmd += ["-q"]
-    if "verbose" in operation and operation["verbose"]:
-        cmd += ["-v"]
-    if "noWarnings" in operation and operation["noWarnings"]:
-        cmd += ["--no-warnings"]
+    cmd: List[str] = []
+    value_flags = (
+        ("bufferingMode", "-B"),
+        ("format", "-f"),
+        ("outputFile", "-o"),
+        ("program", "-e"),
+    )
+    bool_flags = (
+        ("debugInfo", "-d"),
+        ("verboseDebugInfo", "-dd"),
+        ("usdtFileActivation", "--usdt-file-activation"),
+        ("unsafe", "--unsafe"),
+        ("quiet", "-q"),
+        ("verbose", "-v"),
+        ("noWarnings", "--no-warnings"),
+    )
+
+    for option_name, flag in value_flags:
+        if option_name in operation:
+            cmd.extend([flag, operation[option_name]])
+
+    for include_dir in operation.get("includeDir", []):
+        cmd.extend(["-I", include_dir])
+
+    for option_name, flag in bool_flags:
+        if operation.get(option_name):
+            cmd.append(flag)
+
     # ...add other options similarly...
     return cmd
 
@@ -216,40 +218,7 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> CommandResult:
     if verbose:
         print(response_message)
     # Check if GPT wanted to call a function
-    if response_message.get("function_call"):
-        full_command = ["sudo"]
-        if response_message["function_call"]["name"] == "bpftrace":
-            # call bpftrace function
-            full_command.append(response_message["function_call"]["name"])
-            args = json.loads(response_message["function_call"]["arguments"])
-
-            command = construct_command(args)
-            full_command.extend(command)
-            timeout = 300  # default is running for 5 mins
-            if args.get("timeout"):
-                timeout = args["timeout"]
-            # run the bpftrace command
-            res = run_command_with_timeout(full_command, int(timeout))
-            if args.get("continue") and res["stderr"] == "":
-                # continue conversation
-                res["stderr"] = "The conversation shall not complete."
-            return res
-        elif response_message["function_call"]["name"] == "SaveFile":
-            # call save to file, need to save the response data to a file
-            args = json.loads(response_message["function_call"]["arguments"])
-            filename = args["filename"]
-            print("Save to file: " + filename)
-            print(args["content"])
-            with open(filename, 'w', encoding='utf-8') as file:
-                file.write(args["content"])
-            res = {
-                "command": "SaveFile",
-                "stdout": args["content"],
-                "stderr": "",
-                "returncode": 0
-            }
-            return res
-    else:
+    if not response_message.get("function_call"):
         # not function call
         return {
             "command": "response_message",
@@ -257,6 +226,42 @@ def run_bpftrace(prompt: str, verbose: bool = False) -> CommandResult:
             "stderr": "",
             "returncode": 0
         }
+
+    function_call = response_message["function_call"]
+    function_name = function_call["name"]
+    args = json.loads(function_call["arguments"])
+
+    if function_name == "bpftrace":
+        full_command = ["sudo", function_name]
+        command = construct_command(args)
+        full_command.extend(command)
+        timeout = int(args.get("timeout", 300))
+        # run the bpftrace command
+        res = run_command_with_timeout(full_command, timeout)
+        if args.get("continue") and res["stderr"] == "":
+            # continue conversation
+            res["stderr"] = "The conversation shall not complete."
+        return res
+
+    if function_name == "SaveFile":
+        filename = args["filename"]
+        print("Save to file: " + filename)
+        print(args["content"])
+        with open(filename, 'w', encoding='utf-8') as file:
+            file.write(args["content"])
+        return {
+            "command": "SaveFile",
+            "stdout": args["content"],
+            "stderr": "",
+            "returncode": 0
+        }
+
+    return {
+        "command": function_name,
+        "stdout": "",
+        "stderr": f"Unsupported function call: {function_name}",
+        "returncode": 1
+    }
 
 
 class TestRunBpftrace(unittest.TestCase):

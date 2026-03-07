@@ -13,7 +13,7 @@ from langchain_community.vectorstores import FAISS
 
 # db = DocArrayInMemorySearch.from_documents(docs, embeddings)
 
-simple_examples = """
+SIMPLE_EXAMPLES = """
 # list probes containing "sleep"
 bpftrace -l '*sleep*'
 

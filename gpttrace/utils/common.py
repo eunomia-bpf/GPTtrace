@@ -1,9 +1,9 @@
 """Common utility functions for GPTtrace."""
 import os
-from typing import Any
+from typing import Any, Optional, Tuple
 
 import pygments
-from langchain.chains import ConversationChain
+from langchain.chains.conversation.base import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_models import ChatOpenAI
 from llama_index.core import (SimpleDirectoryReader, StorageContext,
@@ -14,7 +14,8 @@ from pygments_markdown_lexer import MarkdownLexer
 
 from gpttrace.config import cfg
 
-def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> str:
+
+def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> Optional[str]:
     """
     Find the content from the document that is closest to the user's request
 
@@ -36,9 +37,9 @@ def get_doc_content_for_query(index: VectorStoreIndex, query: str) -> str:
 def pretty_print(input_info: str, *args: Any, lexer: Any = MarkdownLexer,
                  **kwargs: Any) -> None:
     """
-    This function takes an input string and a lexer (default is MarkdownLexer), 
+    This function takes an input string and a lexer (default is MarkdownLexer),
     lexes the input using the provided lexer, and then pretty prints the lexed tokens.
-    
+
     :param input: The string to be lexed and pretty printed.
     :param lexer: The lexer to use for lexing the input. Defaults to MarkdownLexer.
     :param args: Additional arguments to be passed to the print_formatted_text function.
@@ -48,7 +49,7 @@ def pretty_print(input_info: str, *args: Any, lexer: Any = MarkdownLexer,
     print_formatted_text(PygmentsTokens(tokens), *args, **kwargs)
 
 def init_conversation(need_train: bool, verbose: bool
-                      ) -> list[ConversationChain, VectorStoreIndex]:
+                      ) -> Tuple[ConversationChain, Optional[VectorStoreIndex]]:
     """
     Initialize the conversation and vector database.
 

@@ -3,7 +3,7 @@ import json
 import subprocess
 
 import openai
-from langchain.chains import ConversationChain
+from langchain.chains.conversation.base import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_models import ChatOpenAI
 
@@ -52,7 +52,7 @@ def exec_cmd(cmd_name: str, args: str,
 
     :param cmd_name: The name of the command
     :param args: The parameters required to execute the command.
-    :param func_desrcript: The function call description information about the command is in JSON format.
+    :param func_descript: Function call description information in JSON format.
     """
     full_command = ["sudo"]
     full_command.append(cmd_name)
