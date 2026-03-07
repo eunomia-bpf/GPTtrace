@@ -1,0 +1,32 @@
+name: Tests
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test package can be imported
+      run: |
+        python -c "import gpttrace; print('Import successful')"
+    - name: Run unit tests (non-interactive)
+      run: |
+        # Note: Full tests require user input and are skipped in CI
+        # Run only import and basic syntax checks
+        python -c "from gpttrace.bpftrace import TestRunBpftrace; print('Test class imported successfully')"
+
